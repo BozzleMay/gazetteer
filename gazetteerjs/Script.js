@@ -4,31 +4,8 @@ let option = document.createElement("option");
 option.innerHtml = "Select a country"
 countriesList.appendChild(option);
 
-$.ajax({
-    url: './php/wikipedia.php',
-    type: 'POST',
-    dataType: 'json',
-    data: {
-        title: $('France').val(),
-    },
-   
 
-    success: function(result) {
-        
 
-       // if (result.status.name == "ok") {
-        console.log('what', result.geonames[0].summary)
-            
-            $('#textinfo').html(result.geonames[0].summary);
-           
-           
-      //  }
-    
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-        console.log('no way')
-    }
-})
     
 
 
@@ -69,7 +46,7 @@ var displayCountryInfo = (iso2Code) => {
             throw(error) })
     }
     exchangeRate(countryCode)
-   //wikipedia(countryData.name)
+   wikipedia(countryData.name)
     forecast(countryData.capital)
 
     
@@ -165,9 +142,28 @@ let capitalImage = {
 
     const baseURL = "http://api.openweathermap.org/data/2.5/weather?"
     const API_Key = '833d6bab104b69d5f1d4e30dcf52e1cd'
-
-    
-  
+    const wikipedia =  (countryName) => {
+    $.ajax({
+        url: `http://api.geonames.org/wikipediaSearchJSON?formatted=true&title=${countryName}&username=Bozzle26&style=full`,
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            title: $(countryName).val(),
+        },
+        success: function(result) {
+            if (result.geonames.length != 0) {
+      //  if (result.status.name == "ok") {
+            console.log('what', result)
+                
+               $('#textinfo').html(result.geonames[0].summary);
+         // } 
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log('no way')
+        }
+    })
+}
 
     
  /*
@@ -311,39 +307,7 @@ let iconImageSnow = {
 
        
 
-        var x = document.getElementById("demo");
-
-        function getLocation() {
-          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-          } else { 
-            x.innerHTML = "Geolocation is not supported by this browser.";
-          }
-        }
         
-        function showPosition(position) {
-
-            fetch(`https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}%2C%20${position.coords.longitude}&key=9c469bb50ba04e5c8ddfce02fc12a9b8&language=en&pretty=1`)
-    .then((response) => response.json())
-    .then((data) => {
-        //x.innerHTML = ;
-        let you = L.marker([position.coords.latitude, position.coords.longitude]).addTo(mymap)
-        you.bindPopup(`Current Location: ${data.results[0].formatted}`)
-
-    
-    })
-           
-            
-        }
-        getLocation()
-        function capitalFeature(feature, layer) {
-            // does this feature have a property named popupContent?
-           
-            layer.bindPopup(`<style="font-weight: 800;">${feature.properties.ls_name}</style>` + '</br>' + `Estimated Population: ${feature.properties.pop_max.toLocaleString("en-US")}`)
-            
-            
-            
-        }
         
         
         function olympicFeature(feature, layer) {
@@ -860,7 +824,39 @@ $(window).load(function() {
   
       
  
+var x = document.getElementById("demo");
+
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else { 
+    x.innerHTML = "Geolocation is not supported by this browser.";
+  }
+}
+
+function showPosition(position) {
+
+    fetch(`https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}%2C%20${position.coords.longitude}&key=9c469bb50ba04e5c8ddfce02fc12a9b8&language=en&pretty=1`)
+.then((response) => response.json())
+.then((data) => {
+//x.innerHTML = ;
+let you = L.marker([position.coords.latitude, position.coords.longitude]).addTo(mymap)
+you.bindPopup(`Current Location: ${data.results[0].formatted}`)
+
+
+})
+   
     
+}
+getLocation()
+function capitalFeature(feature, layer) {
+    // does this feature have a property named popupContent?
+   
+    layer.bindPopup(`<style="font-weight: 800;">${feature.properties.ls_name}</style>` + '</br>' + `Estimated Population: ${feature.properties.pop_max.toLocaleString("en-US")}`)
+    
+    
+    
+}
 
    
 

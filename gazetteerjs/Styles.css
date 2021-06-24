@@ -74,7 +74,7 @@ form {
   }
 }
 #flag__container {
-  background-color: white;
+  background-color: #c8d8e4;
   width: 150px;
   height: 100px;
 }
@@ -210,6 +210,7 @@ li {
 }
 .closebtn {
   font-size: 36px;
+  color: #2b6777;
 }
 
 .first-icon-cluster {
@@ -293,4 +294,7 @@ li {
 }
 .checkboxes {
   height: 25px;
+}
+label {
+  padding: 0 5px;
 }
