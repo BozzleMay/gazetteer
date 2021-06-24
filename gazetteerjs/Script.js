@@ -468,7 +468,7 @@ let circleLayer = data.map(country => {L.circle([country.countryInfo.lat, countr
     
 }).addTo(group1).bindPopup(`Cases: ${country.cases.toLocaleString("en-US")}`)
 
-// mymap.addLayer(group1)
+
 
 document.getElementById('covidCases').onclick = function () {
 
@@ -691,6 +691,7 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
         // Remove added layer from dropdown function
         if (newLayer !== null) {
             mymap.removeLayer(newLayer)
+           
         }
 
         mymap.fitBounds(e.target.getBounds());
@@ -801,6 +802,7 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
             } else {
                 
                     mymap.addLayer(geojsonPoint)
+                    
                 
             }
         } 

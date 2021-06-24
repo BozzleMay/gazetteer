@@ -259,6 +259,8 @@ li {
   /* border-left: 4px solid #3a0ca3; */
   padding: 10px;
   z-index: 1000;
+  display: flex;
+  justify-content: center;
 }
 .leaflet-popup-content-wrapper {
   color: white;
@@ -282,4 +284,13 @@ li {
   z-index: 9999;
   background: url("assets/icon/Preloader_11.gif") center no-repeat #fff;
 }
-
+.labels {
+  display: flex;
+  justify-content: space-between;
+}
+#removelayer {
+  background: red;
+}
+.checkboxes {
+  height: 25px;
+}

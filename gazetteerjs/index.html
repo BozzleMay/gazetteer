@@ -16,11 +16,12 @@
 
         integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
         crossorigin=""/>
+        
         <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.css" />
         <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css" />
       
         <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"></script>
-        
+        <link href='https://css.gg/arrow-down.css' rel='stylesheet'>
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
  integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
  crossorigin=""></script>
@@ -53,13 +54,15 @@
               <div id='mapid'></div>
               <div id="map-properties" class="navbar navbar-expand-lg navbar-light bg-light">
                 <form>
-                    <input type="checkbox" name="check" id="removelayer" checked="true"> <label for="check"> Summer Olympic Hosts</label></br>
-                    <input type="checkbox" name="checkSnow" id="removelayerSnow" checked="true"> <label for="checkSnow">
+                  <div class="labels">
+                    <input type="checkbox" name="check" class="checkboxes" id="removelayer" checked="true"> <label for="check"> Summer Olympic Hosts</label></br>
+                    <input type="checkbox" name="checkSnow" class="checkboxes" id="removelayerSnow" checked="true"> <label for="checkSnow">
                         Winter Olympic Hosts</label>
-                        <input type="checkbox" name="checkCapital" id="removeCapital" checked="false"> <label for="checkCapital">
+                    <input type="checkbox" name="checkCapital" class="checkboxes" id="removeCapital" checked="false"> <label for="checkCapital">
                           Capital Cities</label>
-                          <input type="checkbox" name="covid" id="covidCases" checked="false"> <label for="covid">
+                    <input type="checkbox" name="covid" class="checkboxes" id="covidCases" checked="false"> <label for="covid">
                             Covid Cases</label>
+                  </div>
                 </form>
             </div>
             </div>
@@ -168,6 +171,7 @@
                           
 
                     </ul>
+                    
                     </div>
               </div>
                    
