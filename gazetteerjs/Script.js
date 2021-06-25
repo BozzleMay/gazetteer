@@ -10,6 +10,7 @@ countriesList.appendChild(option);
 
 
 
+
 // countriesList.innerHTML = '<option value="Select a country">Select A Country</option>'
 
 var displayCountryInfo = (iso2Code) => {
@@ -49,6 +50,7 @@ var displayCountryInfo = (iso2Code) => {
     exchangeRate(countryCode)
     wikipedia(countryData.name)
     forecast(countryData.capital)
+    statistics(countryData.name)
 
 
 }
@@ -143,6 +145,7 @@ let capitalImage = {
 
 const baseURL = "http://api.openweathermap.org/data/2.5/weather?"
 const API_Key = '833d6bab104b69d5f1d4e30dcf52e1cd'
+
 const wikipedia = (countryName) => {
     $.ajax({
         url: `http://api.geonames.org/wikipediaSearchJSON?formatted=true&title=${countryName}&username=Bozzle26&style=full`,
@@ -864,4 +867,18 @@ function capitalFeature(feature, layer) {
 
 
 
+}
+const statistics = (countryStats) => {
+$.ajax({
+    method: 'GET',
+    url: `https://api.api-ninjas.com/v1/country?name=${countryStats}`,
+    headers: { 'X-Api-Key': 'GxDMLyqjl2t4Q5miXapOX9nqUIO38gIHTw4fRqIV'},
+    contentType: 'application/json',
+    success: function(result) {
+        console.log('stats,', result);
+    },
+    error: function ajaxError(jqXHR) {
+        console.error('Error: ', jqXHR.responseText);
+    }
+});
 }
