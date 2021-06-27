@@ -314,3 +314,11 @@ li {
 label {
   padding: 0 5px;
 }
+.accordion__panel {
+  display: flex;
+  justify-content: flex-start;
+}
+.day {
+  text-decoration: underline;
+  font-size: 1.2rem;
+}

@@ -14,6 +14,7 @@ countriesList.appendChild(option);
 
 var displayCountryInfo = (iso2Code) => {
     var countryData = countries.find(country => country.alpha2Code === iso2Code)
+    document.getElementById('countryName').innerHTML = countryData.name
     document.querySelector('#flag__container img').alt = `Flag of ${countryData.name}`
     document.getElementById('capital').innerHTML = countryData.capital
     document.getElementById('dialingcode').innerHTML = '+' + countryData.callingCodes[0]
@@ -25,7 +26,7 @@ var displayCountryInfo = (iso2Code) => {
     document.getElementById('long').innerText = countryData.latlng[1]
     mymap.setView([countryData.latlng[0], countryData.latlng[1]], 4)
 
-
+    console.log(countryData)
 
     document.getElementById('currencyCode').innerHTML = countryData.currencies[0].code
     var countryCode = countryData.currencies.map(currency => currency.code)
@@ -47,7 +48,7 @@ var displayCountryInfo = (iso2Code) => {
             })
     }
     exchangeRate(countryCode) */
-    wikipedia(countryData.name)
+    wikipedia(countryData.nativeName)
     forecast(countryData.capital)
     statistics(countryData.name)
 
@@ -151,16 +152,17 @@ const wikipedia = (countryName) => {
         type: 'POST',
         dataType: 'json',
         data: {
-            title: $('#countries').find(":selected").val(),
+            title: countryName.replace(/\s/g, '+'),
         },
         success: function(result) {
-         //   if (result.data[0].length != 0) {
+           if (result.data[0].length != 0) {
                 //  if (result.status.name == "ok") {
-                console.log('what', result.data[0].summary)
+                console.log('what', result)
 
                 $('#textinfo').html(result.data[0].summary);
                 // } 
-          //  }
+            }
+           
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.log('no way')
@@ -421,7 +423,7 @@ const disease = (selectedCountry) => {
             let mab = (data.map(country => [country.countryInfo.lat, country.countryInfo.long]))
          
 
-            if (plab.length != 0) {
+           if (plab.length != 0) {
                 document.getElementById('cases').innerHTML = plab[0].cases.toLocaleString("en-US")
                 document.getElementById('casesPerOneMillion').innerHTML = plab[0].casesPerOneMillion.toLocaleString("en-US")
                 document.getElementById('deaths').innerHTML = plab[0].deaths.toLocaleString("en-US")
@@ -470,8 +472,8 @@ fetch(covidUrl)
             }
         })
     })
-
-const localNews = (countryabbrev) => {
+/*
+ const localNews = (countryabbrev) => {
 
     fetch(`https://newsapi.org/v2/top-headlines?country=${countryabbrev}&apiKey=7c6fadef1bbd4d52837bfe5703166957`)
         .then((response) => response.json())
@@ -497,11 +499,70 @@ const localNews = (countryabbrev) => {
             }
         })
 }
+*/
 
+const localNews = (countryabbrev) => {
+    $.ajax({
+        url: 'php/news.php',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            results: countryabbrev,
+        },
+        success: function(result) {
+            {
+                //  if (result.status.name == "ok") {
+                console.log('this', result)
+               
+                if (result.data != 0) {
+                    document.getElementById('headline').innerHTML = result.data[0].title
+                    document.querySelector('#news__link').href = result.data[0].link
+               
+                    if (result.data[0].image_url != null) {
+                        document.querySelector('#news__container img').src = result.data[0].image_url
+                  }
+               }
+               if (result.data != 0) {
+                document.getElementById('headline1').innerHTML = result.data[1].title
+                document.querySelector('#news__link1').href = result.data[1].link
+           
+                if (result.data[1].image_url != null) {
+                    document.querySelector('#news__container1 img').src = result.data[1].image_url
+              }
+           }
+           if (result.data != 0) {
+            document.getElementById('headline2').innerHTML = result.data[2].title
+            document.querySelector('#news__link2').href = result.data[2].link
+       
+            if (result.data[2].image_url != null) {
+                document.querySelector('#news__container2 img').src = result.data[2].image_url
+          }
+       }
+              
+                // } 
+            }
+            
+           
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log('no way')
+        }
+    })
+}
+/*
+
+const localNews = (countryabbrev) => {
+fetch(`https://newsdata.io/api/1/news?apikey=${newsAPI}&country=${countryabbrev}`)
+.then((response) => response.json())
+.then((data) => {
+console.log('newsAPI', data)
+})
+} */
 function openNav() {
-    document.getElementById("side__menu").style.width = "300px"
+    if (document.getElementById('countries').innerHTML != 'Select A Country' ){
+    document.getElementById("side__menu").style.width = "100%"
 
-
+    }
 
 }
 
@@ -577,7 +638,7 @@ let markersCapital = L.markerClusterGroup({
 
 
 let countryGeo = $.ajax({
-    url: './countryBorders.geo.json',
+    url: './data/countryBorders.geo.json',
     dataType: "json",
     success: console.log("County data successfully loaded."),
     error: function (xhr) {
@@ -586,7 +647,7 @@ let countryGeo = $.ajax({
 })
 
 let pointGeo = $.ajax({
-    url: './sumOlympics.geo.json',
+    url: './data/sumOlympics.geo.json',
     dataType: "json",
     success: console.log("County data successfully loaded."),
     error: function (xhr) {
@@ -595,7 +656,7 @@ let pointGeo = $.ajax({
 })
 
 let pointGeoSnow = $.ajax({
-    url: './winOlympics.geo.json',
+    url: './data/winOlympics.geo.json',
     dataType: "json",
     success: console.log("Point data successfully loaded."),
     error: function (xhr) {
@@ -603,7 +664,7 @@ let pointGeoSnow = $.ajax({
     }
 })
 let capital = $.ajax({
-    url: './capitals.geo.json',
+    url: './data/capitals.geo.json',
     dataType: "json",
     success: console.log("Capital data successfully loaded."),
     error: function (xhr) {

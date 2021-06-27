@@ -23,9 +23,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
   crossorigin=""/>
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-  integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-  crossorigin=""></script>
+  <script src="./js/leaflet_fixbug.js"></script>
   
   <script type='text/javascript' src='./js/markercluster.js'></script>
   <script src='https://cdn.plot.ly/plotly-2.1.0.min.js'></script>
@@ -94,6 +92,7 @@
                 <img src='' alt=''>
               </div>
               <div id='info-container'>
+                <p>Country: <span id='countryName'></span></p>
                 <p>Capital: <span id='capital'></span></p>
                 <p>Dialing Code: <span id="dialingcode"></span></p>
                 <p>Population: <span id="population"></span></p>
@@ -102,8 +101,8 @@
                 <p>Continent:<span id="region"></span></p>
 
 
-                <p>Latitude: <span id="lat">0</span></p>
-                <p>Longitude: <span id="long">0</span></p>
+                <p>Capital City Latitude: <span id="lat">0</span></p>
+                <p>Capital City Longitude: <span id="long">0</span></p>
               </div>
             </div>
           </li>
@@ -112,21 +111,21 @@
 
             <div class="accordion__panel">
               <div id='today'>
-                <p>Today</p>
+                <p class='day'>Today</p>
                 <p>Conditions: <span id='weather'></span></p>
                 <p><img id='icon' src='' alt=''></p>
                 <p>Max Temp: <span id='max'></span></p>
                 <p>Min Temp: <span id='min'></span></p>
               </div>
               <div id='tomorrow'>
-                <p>Tomorrow</p>
+                <p class='day'>Tomorrow</p>
                 <p>Conditions: <span id='weathertomo'></span></p>
                 <p><img id='icontomo' src='' alt=''></p>
                 <p>Max Temp: <span id='maxtomorrow'></span></p>
                 <p>Min Temp: <span id='mintomorrow'></span></p>
               </div>
               <div id='dayafter'>
-                <p>Day After Tomorrow</p>
+                <p class='day'>Day After Tomorrow</p>
                 <p>Conditions: <span id='weathernext'></span></p>
                 <p><img id='iconnext' src='' alt=''></p>
                 <p>Max Temp: <span id='max2'></span></p>
@@ -149,7 +148,7 @@
 
 
             <div class="accordion__panel">
-              <p>Information: <span id='textinfo'></span></p>
+              <p>Information: <span id='textinfo'>N/A</span></p>
             </div>
           </li>
           <li>
@@ -224,6 +223,7 @@
 
     var control = L.Control.openCageSearch(options).addTo(mymap);
   </script>
+
 </body>
 
 </html>
