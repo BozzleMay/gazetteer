@@ -154,7 +154,7 @@ const wikipedia = (countryName) => {
             title: $('#countries').find(":selected").val(),
         },
         success: function(result) {
-         //   if (result.geonames.length != 0) {
+         //   if (result.data[0].length != 0) {
                 //  if (result.status.name == "ok") {
                 console.log('what', result.data[0].summary)
 
@@ -323,7 +323,7 @@ function olympicFeature(feature, layer) {
 }
 
 function winOlympicFeature(feature, layer) {
-    // does this feature have a property named popupContent?
+    
 
     layer.bindPopup(`City: ${feature.properties.name}` + '</br>' + `Year: ${feature.properties.year}`)
 
@@ -332,7 +332,7 @@ function winOlympicFeature(feature, layer) {
 /*
 
         function onEachFeature(feature, layer) {
-            // does this feature have a property named popupContent?
+          
            
                 layer.bindPopup(`Country: ${feature.properties.name}`);
                 layer.on({
@@ -761,11 +761,12 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
     })
 
     mymap.addLayer(geojson)
+    
 
     let geojsonPoint = L.geoJson(pointlayer, {
         pointToLayer: IconImage,
-        onEachFeature: olympicFeature
-
+        onEachFeature: olympicFeature,
+        
 
     })
 
@@ -783,7 +784,7 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
 
 
     
-
+    
      markers.addLayer(geojsonPoint)
      markersSnow.addLayer(geojsonPointSnow)
      markersCapital.addLayer(geojsonPointCapital)
