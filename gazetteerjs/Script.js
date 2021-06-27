@@ -10,7 +10,6 @@ countriesList.appendChild(option);
 
 
 
-
 // countriesList.innerHTML = '<option value="Select a country">Select A Country</option>'
 
 var displayCountryInfo = (iso2Code) => {
@@ -192,7 +191,7 @@ var options = {
     limit: 10,
     proximity: '51.52255, -0.10249' // favour results near here
 };
-var control = L.Control.openCageSearch(options).addTo(mymap);
+// var control = L.Control.openCageSearch(options).addTo(mymap);
 
 /*
   var options = {
@@ -302,9 +301,9 @@ $("round").click(function () {
 
 
 
-L.easyButton('fa-home', function (btn, mymap) {
-    mymap.setView([54, -2], 4);
-}).addTo(mymap);
+// L.easyButton('fa-home', function (btn, mymap) {
+//     mymap.setView([54, -2], 4);
+// }).addTo(mymap);
 
 
 
@@ -438,8 +437,17 @@ fetch(covidUrl)
     .then((response) => response.json())
     .then((data) => {
         let group1 = L.featureGroup()
+        var geojson = {
+            type: "FeatureCollection",
+            features: [],
+        };
         let circleLayer = data.map(country => {
-            L.circle([country.countryInfo.lat, country.countryInfo.long, ], {
+            let lat = country.countryInfo.lat
+            let long = country.countryInfo.long
+            let c = country.cases
+         
+            // return [[long,lat],c]
+           let y = L.circle([lat,long], {
                 color: 'red',
                 fillColor: '#f03',
                 radius: `${Math.sqrt(country.cases * 1500)}`,
@@ -524,6 +532,7 @@ let markers = new L.markerClusterGroup({
         });
     },
 })
+
 let markersSnow = L.markerClusterGroup({
     spiderfyOnMaxZoom: true,
     removeOutsideVisibleBounds: false,
@@ -545,6 +554,26 @@ let markersSnow = L.markerClusterGroup({
     },
 });
 
+let markersCapital = L.markerClusterGroup({
+    spiderfyOnMaxZoom: true,
+    removeOutsideVisibleBounds: false,
+    disableClusteringAtZoom: 8,
+    showCoverageOnHover: false,
+    maxClusterRadius: 70,
+    animateAddingMarkers: true,
+    iconCreateFunction: cluster => {
+        let markers = cluster.getAllChildMarkers();
+        let first = capitalImage.iconUrl
+        console.log("these are::" + markers)
+        let html =
+            `<img class="first-icon-cluster" src="${first}"></img><div class="circleCapital">${markers.length}</div>`;
+        return L.divIcon({
+            html: html,
+            className: 'mycluster',
+            iconSize: L.point(10, 10)
+        });
+    },
+});
 
 
 let countryGeo = $.ajax({
@@ -601,6 +630,7 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
 
     let lastClickedLayer = null
     let group2 = L.featureGroup()
+
     countriesList.addEventListener('change', event => {
         displayCountryInfo(event.target.value)
         let selected = countrylayer.features.filter(place => place.properties.iso_a2 === event.target.value)
@@ -715,6 +745,7 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
             icon: myIcon
         })
     }
+
     let CapitalImage = (feature, latlng) => {
         let myIcon = L.icon(capitalImage)
 
@@ -736,74 +767,79 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
         onEachFeature: olympicFeature
 
 
-    }).addTo(mymap)
+    })
 
     let geojsonPointCapital = L.geoJson(capitallayer, {
         pointToLayer: CapitalImage,
         onEachFeature: capitalFeature
 
-
-
-    }).addTo(mymap)
-
-
+    })
 
 
     let geojsonPointSnow = L.geoJson(pointlayerSnow, {
         pointToLayer: IconImageSnow,
         onEachFeature: winOlympicFeature
-
-
-    }).addTo(mymap)
+    })
 
 
     console.log("Accesse this.. ", geojsonPoint)
 
-    //  markers.addLayer(geojsonPoint)
-    //  markersSnow.addLayer(geojsonPointSnow)
-    mymap.addLayer(geojsonPointCapital)
+     markers.addLayer(geojsonPoint)
+     markersSnow.addLayer(geojsonPointSnow)
+     markersCapital.addLayer(geojsonPointCapital)
     //   mymap.addLayer(markers)
     //   mymap.addLayer(markersSnow)
 
-    mymap.addLayer(geojsonPoint)
-    mymap.addLayer(geojsonPointSnow)
-
+    mymap.addLayer(markers)
+    mymap.addLayer(markersSnow)
+    mymap.addLayer(markersCapital)
     document.getElementById('removelayer').onclick = function () {
         if (!this.checked) {
             if (mymap.hasLayer(geojsonPoint)) {
                 mymap.removeLayer(geojsonPoint)
+            } else {
+                mymap.removeLayer(markers)
             }
         } else {
-
-            mymap.addLayer(geojsonPoint)
+            if (mymap.hasLayer(geojsonPoint)) {
+                mymap.addLayer(geojsonPoint)
+            } else {
+                mymap.addLayer(markers)
+            }
 
 
         }
     }
+
     document.getElementById('removeCapital').onclick = function () {
         if (!this.checked) {
             if (mymap.hasLayer(geojsonPointCapital)) {
                 mymap.removeLayer(geojsonPointCapital)
+            }else {
+                mymap.removeLayer(markersCapital)
             }
-
         } else {
-
-            mymap.addLayer(geojsonPointCapital)
-
+            if (mymap.hasLayer(geojsonPointCapital)) {
+                mymap.addLayer(geojsonPointCapital)
+            } else {
+                mymap.addLayer(markersCapital)
+            }
         }
     }
-
-
 
     document.getElementById('removelayerSnow').onclick = function () {
         if (!this.checked) {
             if (mymap.hasLayer(geojsonPointSnow)) {
                 mymap.removeLayer(geojsonPointSnow)
+            }else {
+                mymap.removeLayer(markersSnow)
             }
         } else {
-
-            mymap.addLayer(geojsonPointSnow)
-
+            if (mymap.hasLayer(geojsonPointSnow)) {
+                mymap.addLayer(geojsonPointSnow)
+            } else {
+                mymap.addLayer(markersSnow)
+            }
         }
     }
 
@@ -869,16 +905,47 @@ function capitalFeature(feature, layer) {
 
 }
 const statistics = (countryStats) => {
-$.ajax({
-    method: 'GET',
-    url: `https://api.api-ninjas.com/v1/country?name=${countryStats}`,
-    headers: { 'X-Api-Key': 'GxDMLyqjl2t4Q5miXapOX9nqUIO38gIHTw4fRqIV'},
-    contentType: 'application/json',
-    success: function(result) {
-        console.log('stats,', result);
-    },
-    error: function ajaxError(jqXHR) {
-        console.error('Error: ', jqXHR.responseText);
+    $.ajax({
+        method: 'GET',
+        url: `https://api.api-ninjas.com/v1/country?name=${countryStats}`,
+        headers: { 'X-Api-Key': 'GxDMLyqjl2t4Q5miXapOX9nqUIO38gIHTw4fRqIV'},
+        contentType: 'application/json',
+        success: function(result) {
+            console.log('stats,', result);
+            console.log('Life Expectancy,', result[0].life_expectancy_male);
+            var data = [{
+                values: [result[0].employment_agriculture, result[0].employment_industry, result[0].employment_services],
+                labels: ['Agriculture', 'Industry', 'Services'],
+                type: 'pie',
+                
+              }];
+              
+              var layout = {
+                height: 200,
+                width: 200,
+                autosize: false,
+                margin: {
+                l: 20,
+                r: 50,
+                t: 15,
+                b: 100
+                },
+                showLegend: false,
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor:'rgba(0,0,0,0)'
+              };
+              
+              Plotly.newPlot('myDiv', data, layout, {displayModeBar: false});
+              document.getElementById('life_expectancy_male').innerHTML = result[0].life_expectancy_male
+              document.getElementById('life_expectancy_female').innerHTML = result[0].life_expectancy_female
+              document.getElementById('gdp').innerHTML = result[0].gdp
+              document.getElementById('per_capita').innerHTML = result[0].gdp_per_capita
+              document.getElementById('unemployed').innerHTML = result[0].unemployment
+              document.getElementById('co2_emissions').innerHTML = result[0].co2_emissions
+        },
+        error: function ajaxError(jqXHR) {
+            console.error('Error: ', jqXHR.responseText);
+        }
+    });
     }
-});
-}
+    

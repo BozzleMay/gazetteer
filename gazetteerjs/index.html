@@ -1,190 +1,229 @@
 <!DOCTYPE html>
 
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Gazetteer</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-        
-        
-         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-         <link rel="stylesheet" href="Styles.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
 
-        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-        crossorigin=""/>
-        
-        <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.css" />
-        <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css" />
-      
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"></script>
-        <link href='https://css.gg/arrow-down.css' rel='stylesheet'>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Gazetteer</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="Styles.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"></script>
+  <link href='https://css.gg/arrow-down.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+  integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+  crossorigin=""/>
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
- integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
- crossorigin=""></script>
- <script src="https://unpkg.com/leaflet.markercluster@1.3.0/dist/leaflet.markercluster.js"></script>
- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/opencagedata/leaflet-opencage-search@1.4.1/dist/css/L.Control.OpenCageData.Search.min.css" />
+  integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+  crossorigin=""></script>
+  
+  <script type='text/javascript' src='./js/markercluster.js'></script>
+  <script src='https://cdn.plot.ly/plotly-2.1.0.min.js'></script>
+  <script
+    src="https://cdn.jsdelivr.net/gh/opencagedata/leaflet-opencage-search@1.4.1/dist/js/L.Control.OpenCageSearch.min.js">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.EasyButton/2.4.0/easy-button.min.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.3.0/dist/leaflet.markercluster.js"></script>
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/opencagedata/leaflet-opencage-search@1.4.1/dist/css/L.Control.OpenCageData.Search.min.css" />
 
-        <script src="https://cdn.jsdelivr.net/gh/opencagedata/leaflet-opencage-search@1.4.1/dist/js/L.Control.OpenCageSearch.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
-        <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
-      </head>
-    <body>
-      <div class="se-pre-con"></div>
-        
-        <div class="app">
-            <div class='app__left'>
-              <div class="app__header">
-              
-                <h1>Gazetteer</h1>
-                
-                <table>
-                  <td>
-                    <select id='countries' onclick="openNav()">
-                      <option value="Select a country" >Select A Country</option>
-                      
-                    </select>
-                </td>
-                </table>
-              </div>
-              
-              <div id='mapid'></div>
-              <div id="map-properties" class="navbar navbar-expand-lg navbar-light bg-light">
-                <form>
-                  <div class="labels">
-                    <input type="checkbox" name="check" class="checkboxes" id="removelayer" checked="true"> <label for="check"> Summer Olympic Hosts</label></br>
-                    <input type="checkbox" name="checkSnow" class="checkboxes" id="removelayerSnow" checked="true"> <label for="checkSnow">
-                        Winter Olympic Hosts</label>
-                    <input type="checkbox" name="checkCapital" class="checkboxes" id="removeCapital" checked="false"> <label for="checkCapital">
-                          Capital Cities</label>
-                    <input type="checkbox" name="covid" class="checkboxes" id="covidCases" checked="false"> <label for="covid">
-                            Covid Cases</label>
-                  </div>
-                </form>
-            </div>
-            </div>
-            <div class="app__right">
-              <span id='toggle__info' onclick="openNav()">&#9776; Country Information</span>
-              <div id="side__menu" class="side__menu">
-                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-                  
-              <ul class="accordion">
-                  <li>
-                      <button class='accordion__control'>Country Details</button>
-                    <div class='accordion__panel'>
-                      
-                    
-                
-                        <div id="flag__container">
-                            <img src='' alt=''>
-                        </div>
-                        <div id='info-container'>
-                        <p>Capital: <span id='capital'></span></p>
-                        <p>Dialing Code: <span id="dialingcode"></span></p>
-                        <p>Population: <span id="population"></span></p>
-                        
-                        
-                        <p>Continent:<span id="region"></span></p>
-                        
-                        
-                        <p>Latitude: <span id="lat">0</span></p>
-                        <p>Longitude: <span id="long">0</span></p>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <button class='accordion__control'>Weather</button>
-                  
-                        <div class="accordion__panel">
-                          <div id='today'>
-                            <p>Today</p>
-                            <p>Conditions: <span id='weather'></span></p>
-                            <p><img id='icon' src='' alt=''></p>
-                            <p>Max Temp: <span id='max'></span></p>
-                            <p>Min Temp: <span id='min'></span></p>
-                          </div>
-                          <div id='tomorrow'>
-                            <p>Tomorrow</p>
-                            <p>Conditions: <span id='weathertomo'></span></p>
-                            <p><img id='icontomo' src='' alt=''></p>
-                            <p>Max Temp: <span id='maxtomorrow'></span></p>
-                            <p>Min Temp: <span id='mintomorrow'></span></p>
-                          </div>
-                          <div id='dayafter'>
-                            <p>Day After Tomorrow</p>
-                            <p>Conditions: <span id='weathernext'></span></p>
-                            <p><img id='iconnext' src='' alt=''></p>
-                            <p>Max Temp: <span id='max2'></span></p>
-                            <p>Min Temp: <span id='min2'></span></p>
-                          </div>
-                        </div>
-                      </li>
-                    <li>
-                      <button class='accordion__control'>Exchange Rates</button>
-                    <div class='accordion__panel'>
-                      <p>Currencies:<span id="currencies"></span></p>
-                      
-                      <p>Exchange Rate: </br> 1 USD = <span id='code'></span> 
-                        <span id='currencyCode'></span></p>
-                    </div>
-                    </li>
-                    
-                      <li> <button class='accordion__control'>Country Info</button>
-                      
-                      
-                    
-                        <div class="accordion__panel">
-                          <p>Information: <span id='textinfo'></span></p>
-                        </div>
-                      </li>
-                      <li>
-                        <button class='accordion__control'>Covid Statistics</button>
-                        <div class="accordion__panel">
-                          <p>Cases: <span id='cases'></span></p>
-                          <p>Cases Per One Million: <span id='casesPerOneMillion'></span></p>
-                          <p>Deaths: <span id='deaths'></span></p>
-                          <p>Deaths Per One Million: <span id='deathsPerOneMillion'></span></p>
-                          <p>Recovered: <span id='recovered'></span></p>
-                          <p>Recovered Per One Million: <span id='recoveredPerOneMillion'></span></p>
-                          
-                        </div>
-                      </li>
-                      <li>
-                        <button class='accordion__control'>Regional News</button>
-                        <div class="accordion__panel">
-                          <div id="news__container">
-                            <img src='https://th.bing.com/th/id/R2246dc72219bef9c17ed4e5678036e0d?rik=BCZbKmDoEVZpDA&riu=http%3a%2f%2fupload.wikimedia.org%2fwikipedia%2fcommons%2ff%2ffc%2fNo_picture_available.png&ehk=NpGv2G6CN9oKTqXri5h4zqIfeJcxyquxs3MxRT3n9ek%3d&risl=&pid=ImgRaw' alt=''>
-                        </div>
-                          <p>Headline: <a id='news__link' href=''><span id='headline'>N/A</span></a> </p>
-                          <div id="news__container1">
-                            <img src='https://th.bing.com/th/id/R2246dc72219bef9c17ed4e5678036e0d?rik=BCZbKmDoEVZpDA&riu=http%3a%2f%2fupload.wikimedia.org%2fwikipedia%2fcommons%2ff%2ffc%2fNo_picture_available.png&ehk=NpGv2G6CN9oKTqXri5h4zqIfeJcxyquxs3MxRT3n9ek%3d&risl=&pid=ImgRaw' alt=''>
-                        </div>
-                          <p>Headline: <a id='news__link1' href=''><span id='headline1'>N/A</span></a> </p>
-                          <div id="news__container2">
-                            <img src='https://th.bing.com/th/id/R2246dc72219bef9c17ed4e5678036e0d?rik=BCZbKmDoEVZpDA&riu=http%3a%2f%2fupload.wikimedia.org%2fwikipedia%2fcommons%2ff%2ffc%2fNo_picture_available.png&ehk=NpGv2G6CN9oKTqXri5h4zqIfeJcxyquxs3MxRT3n9ek%3d&risl=&pid=ImgRaw' alt=''>
-                        </div>
-                          <p>Headline: <a id='news__link2' href=''><span id='headline2'>N/A </span></a> </p>
-                      </li>
-                          
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
 
-                    </ul>
-                    
-                    </div>
-              </div>
-                   
-                    
-                </div>          
-            
+</head>
+
+<body>
+  <div class="se-pre-con"></div>
+
+  <div class="app">
+    <div class='app__left'>
+      <div class="app__header">
+
+        <h1>Gazetteer</h1>
+
+        <table>
+          <td>
+            <select id='countries' onclick="openNav()">
+              <option value="Select a country">Select A Country</option>
+
+            </select>
+          </td>
+        </table>
+      </div>
+
+      <div id='mapid'></div>
+      <div id="map-properties" class="navbar navbar-expand-lg navbar-light bg-light">
+        <form>
+          <div class="labels">
+            <input type="checkbox" name="check" class="checkboxes" id="removelayer" checked="true"> <label for="check">
+              Summer Olympic Hosts</label></br>
+            <input type="checkbox" name="checkSnow" class="checkboxes" id="removelayerSnow" checked="true"> <label
+              for="checkSnow">
+              Winter Olympic Hosts</label>
+            <input type="checkbox" name="checkCapital" class="checkboxes" id="removeCapital" checked="false"> <label
+              for="checkCapital">
+              Capital Cities</label>
+            <input type="checkbox" name="covid" class="checkboxes" id="covidCases"> <label for="covid">
+              Covid Cases</label>
           </div>
-        <script type="application/javascript" src="./js/jquery-2.2.3.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-        <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>-->
-        <script type="application/javascript" src="Script.js"></script>
-        <script type='text/javascript' src='./js/markercluster.js'></script>
-        <script type='text/javascript' src='./trial.js'></script>
-    </body>
+        </form>
+      </div>
+    </div>
+    <div class="app__right">
+      <span id='toggle__info' onclick="openNav()">&#9776; Country Information</span>
+      <div id="side__menu" class="side__menu">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+
+        <ul class="accordion">
+          <li>
+            <button class='accordion__control'>Country Details</button>
+            <div class='accordion__panel'>
+
+
+
+              <div id="flag__container">
+                <img src='' alt=''>
+              </div>
+              <div id='info-container'>
+                <p>Capital: <span id='capital'></span></p>
+                <p>Dialing Code: <span id="dialingcode"></span></p>
+                <p>Population: <span id="population"></span></p>
+
+
+                <p>Continent:<span id="region"></span></p>
+
+
+                <p>Latitude: <span id="lat">0</span></p>
+                <p>Longitude: <span id="long">0</span></p>
+              </div>
+            </div>
+          </li>
+          <li>
+            <button class='accordion__control'>Weather</button>
+
+            <div class="accordion__panel">
+              <div id='today'>
+                <p>Today</p>
+                <p>Conditions: <span id='weather'></span></p>
+                <p><img id='icon' src='' alt=''></p>
+                <p>Max Temp: <span id='max'></span></p>
+                <p>Min Temp: <span id='min'></span></p>
+              </div>
+              <div id='tomorrow'>
+                <p>Tomorrow</p>
+                <p>Conditions: <span id='weathertomo'></span></p>
+                <p><img id='icontomo' src='' alt=''></p>
+                <p>Max Temp: <span id='maxtomorrow'></span></p>
+                <p>Min Temp: <span id='mintomorrow'></span></p>
+              </div>
+              <div id='dayafter'>
+                <p>Day After Tomorrow</p>
+                <p>Conditions: <span id='weathernext'></span></p>
+                <p><img id='iconnext' src='' alt=''></p>
+                <p>Max Temp: <span id='max2'></span></p>
+                <p>Min Temp: <span id='min2'></span></p>
+              </div>
+            </div>
+          </li>
+          <li>
+            <button class='accordion__control'>Exchange Rates</button>
+            <div class='accordion__panel'>
+              <p>Currencies:<span id="currencies"></span></p>
+
+              <p>Exchange Rate: </br> 1 USD = <span id='code'></span>
+                <span id='currencyCode'></span></p>
+            </div>
+          </li>
+
+          <li> <button class='accordion__control'>Country Info</button>
+
+
+
+            <div class="accordion__panel">
+              <p>Information: <span id='textinfo'></span></p>
+            </div>
+          </li>
+          <li>
+            <button class='accordion__control'>Covid Statistics</button>
+            <div class="accordion__panel">
+              <p>Cases: <span id='cases'></span></p>
+              <p>Cases Per One Million: <span id='casesPerOneMillion'></span></p>
+              <p>Deaths: <span id='deaths'></span></p>
+              <p>Deaths Per One Million: <span id='deathsPerOneMillion'></span></p>
+              <p>Recovered: <span id='recovered'></span></p>
+              <p>Recovered Per One Million: <span id='recoveredPerOneMillion'></span></p>
+
+            </div>
+          </li>
+          <li>
+            <button class='accordion__control'>Regional News</button>
+            <div class="accordion__panel">
+              <div id="news__container">
+                <img
+                  src='https://th.bing.com/th/id/R2246dc72219bef9c17ed4e5678036e0d?rik=BCZbKmDoEVZpDA&riu=http%3a%2f%2fupload.wikimedia.org%2fwikipedia%2fcommons%2ff%2ffc%2fNo_picture_available.png&ehk=NpGv2G6CN9oKTqXri5h4zqIfeJcxyquxs3MxRT3n9ek%3d&risl=&pid=ImgRaw'
+                  alt=''>
+              </div>
+              <p>Headline: <a id='news__link' href=''><span id='headline'>N/A</span></a> </p>
+              <div id="news__container1">
+                <img
+                  src='https://th.bing.com/th/id/R2246dc72219bef9c17ed4e5678036e0d?rik=BCZbKmDoEVZpDA&riu=http%3a%2f%2fupload.wikimedia.org%2fwikipedia%2fcommons%2ff%2ffc%2fNo_picture_available.png&ehk=NpGv2G6CN9oKTqXri5h4zqIfeJcxyquxs3MxRT3n9ek%3d&risl=&pid=ImgRaw'
+                  alt=''>
+              </div>
+              <p>Headline: <a id='news__link1' href=''><span id='headline1'>N/A</span></a> </p>
+              <div id="news__container2">
+                <img
+                  src='https://th.bing.com/th/id/R2246dc72219bef9c17ed4e5678036e0d?rik=BCZbKmDoEVZpDA&riu=http%3a%2f%2fupload.wikimedia.org%2fwikipedia%2fcommons%2ff%2ffc%2fNo_picture_available.png&ehk=NpGv2G6CN9oKTqXri5h4zqIfeJcxyquxs3MxRT3n9ek%3d&risl=&pid=ImgRaw'
+                  alt=''>
+              </div>
+              <p>Headline: <a id='news__link2' href=''><span id='headline2'>N/A </span></a> </p>
+          </li>
+          <li>
+                        <button class='accordion__control'>Country Statistics</button>
+                        <div class="accordion__panel">
+                           <p>Life Expectancy Male: <span id='life_expectancy_male'>N/A</span></p>
+                           <p>Life Expectancy Female: <span id='life_expectancy_female'>N/A</span> </p>
+                           <p>GDP: <span id='gdp'>N/A</span> </p>
+                           <p>GDP per capita: <span id='per_capita'>N/A</span></p>
+                           <p>Unemployment: <span id='unemployed'>N/A</span><span>(%)</span></p>
+                          <p>CO2 Emissions:<span id='co2_emissions'>N/A</span> <span>(million tonnes)</span></p>
+                          <p>Employment Sector:</p>
+                          <div id='myDiv'></div>
+                        </div>
+                      </li>
+
+
+        </ul>
+
+      </div>
+    </div>
+
+
+  </div>
+
+  </div>
+  <script type="application/javascript" src="./js/jquery-2.2.3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>-->
+  <!-- <script type='text/javascript' src='js/leaflet7.js'></script> -->
+   <!-- Make sure you put this AFTER Leaflet's CSS -->
+   <script type="application/javascript" src="Script.js"></script>
+  <!-- <script type='text/javascript' src='./trial.js'></script> -->
+  <script>
+    L.easyButton('fa-home', function (btn, mymap) {
+      mymap.setView([54, -2], 4);
+    }).addTo(mymap);
+
+    var control = L.Control.openCageSearch(options).addTo(mymap);
+  </script>
+</body>
+
 </html>
