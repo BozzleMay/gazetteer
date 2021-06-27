@@ -147,7 +147,7 @@ const API_Key = '833d6bab104b69d5f1d4e30dcf52e1cd'
 
 const wikipedia = (countryName) => {
     $.ajax({
-        url: `http://api.geonames.org/wikipediaSearchJSON?formatted=true&title=${countryName}&username=Bozzle26&style=full`,
+        url: 'php/wikipedia.php',
         type: 'POST',
         dataType: 'json',
         data: {
