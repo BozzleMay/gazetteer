@@ -35,7 +35,7 @@ var displayCountryInfo = (iso2Code) => {
 
 
 
-    const exchangeRate = (countryCode) => {
+  /*  const exchangeRate = (countryCode) => {
         fetch('https://openexchangerates.org/api/latest.json?app_id=ff11d9995b824a64a232e936f69d91f1')
             .then((response) => response.json())
             .then((data) => {
@@ -46,7 +46,7 @@ var displayCountryInfo = (iso2Code) => {
                 throw (error)
             })
     }
-    exchangeRate(countryCode)
+    exchangeRate(countryCode) */
     wikipedia(countryData.name)
     forecast(countryData.capital)
     statistics(countryData.name)
@@ -147,20 +147,20 @@ const API_Key = '833d6bab104b69d5f1d4e30dcf52e1cd'
 
 const wikipedia = (countryName) => {
     $.ajax({
-        url: 'php/wikipedia.php',
+        url: "php/wikipedia.php",
         type: 'POST',
         dataType: 'json',
         data: {
-            title: $(countryName).val(),
+            title: $('#countries').find(":selected").val(),
         },
-        success: function (result) {
-            if (result.geonames.length != 0) {
+        success: function(result) {
+         //   if (result.geonames.length != 0) {
                 //  if (result.status.name == "ok") {
-                console.log('what', result)
+                console.log('what', result.data[0].summary)
 
-                $('#textinfo').html(result.geonames[0].summary);
+                $('#textinfo').html(result.data[0].summary);
                 // } 
-            }
+          //  }
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.log('no way')
@@ -415,11 +415,11 @@ const disease = (selectedCountry) => {
     fetch(covidUrl)
         .then((response) => response.json())
         .then((data) => {
-            console.log(data)
+            
 
             let plab = (data.filter(country => country.country === selectedCountry))
             let mab = (data.map(country => [country.countryInfo.lat, country.countryInfo.long]))
-            console.log('plab', plab)
+         
 
             if (plab.length != 0) {
                 document.getElementById('cases').innerHTML = plab[0].cases.toLocaleString("en-US")
@@ -476,7 +476,7 @@ const localNews = (countryabbrev) => {
     fetch(`https://newsapi.org/v2/top-headlines?country=${countryabbrev}&apiKey=7c6fadef1bbd4d52837bfe5703166957`)
         .then((response) => response.json())
         .then((data) => {
-            console.log(data)
+       
 
             if (data.totalResults != 0) {
                 document.getElementById('headline').innerHTML = data.articles[0].title
@@ -522,7 +522,7 @@ let markers = new L.markerClusterGroup({
     iconCreateFunction: cluster => {
         let markers = cluster.getAllChildMarkers();
         let first = iconImage.iconUrl
-        console.log("these arealso::" + markers)
+       
         let html =
             `<img class="first-icon-cluster" src="${first}"></img><div class="circleGold">${markers.length}</div>`;
         return L.divIcon({
@@ -543,7 +543,7 @@ let markersSnow = L.markerClusterGroup({
     iconCreateFunction: cluster => {
         let markers = cluster.getAllChildMarkers();
         let first = iconImageSnow.iconUrl
-        console.log("these are::" + markers)
+        
         let html =
             `<img class="first-icon-cluster" src="${first}"></img><div class="circleSnow">${markers.length}</div>`;
         return L.divIcon({
@@ -564,7 +564,7 @@ let markersCapital = L.markerClusterGroup({
     iconCreateFunction: cluster => {
         let markers = cluster.getAllChildMarkers();
         let first = capitalImage.iconUrl
-        console.log("these are::" + markers)
+        
         let html =
             `<img class="first-icon-cluster" src="${first}"></img><div class="circleCapital">${markers.length}</div>`;
         return L.divIcon({
@@ -685,7 +685,7 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
     // Onclick function
     let OnClickFeature = e => {
         displayCountryInfo(e.target.feature.properties.iso_a2)
-        console.log('match', e.target)
+        
         group2.clearLayers()
         // Default style
         if (lastClickedLayer !== null) {
@@ -702,7 +702,7 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
 
         // Set layer target
         let countrylayer = e.target;
-        console.log('click', e)
+       
         // Replace null layer
         lastClickedLayer = countrylayer;
         // Set new style when the geojson clicked
@@ -717,7 +717,7 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
         }
 
         let cFil = cNcC[countrylayer.feature.properties.name]
-        console.log(cFil)
+       
         displayCountryInfo(cFil);
 
         $("select option").filter(function () {
@@ -727,7 +727,7 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
 
     }
 
-    console.log("This is Sparta", countrylayer, pointlayer, pointlayerSnow, capitallayer)
+
 
     let IconImage = (feature, latlng) => {
         let myIcon = L.icon(iconImage)
@@ -782,7 +782,7 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
     })
 
 
-    console.log("Accesse this.. ", geojsonPoint)
+    
 
      markers.addLayer(geojsonPoint)
      markersSnow.addLayer(geojsonPointSnow)
@@ -911,8 +911,7 @@ const statistics = (countryStats) => {
         headers: { 'X-Api-Key': 'GxDMLyqjl2t4Q5miXapOX9nqUIO38gIHTw4fRqIV'},
         contentType: 'application/json',
         success: function(result) {
-            console.log('stats,', result);
-            console.log('Life Expectancy,', result[0].life_expectancy_male);
+     
             var data = [{
                 values: [result[0].employment_agriculture, result[0].employment_industry, result[0].employment_services],
                 labels: ['Agriculture', 'Industry', 'Services'],
