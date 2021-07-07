@@ -6,20 +6,26 @@
 body {
   background-color: #c8d8e4;
 }
-p {
-  font-weight: 700;
-  color: #2b6777;
-}
+
 span {
   font-weight: 400;
 }
-#mapid {
-  height: 500px;
+/*#mapid {
+  height: 100%;
+  width: 100%;
   background-color: white;
   padding: 1rem;
   border-radius: 20px;
   margin-top: 16px;
   box-shadow: 0 0 8px -4px rgba(0, 0, 0, 0.5);
+} */
+#mapid {
+  width: 100%;
+  height: 100%;
+  /* z-index: 999; */
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .app {
@@ -27,7 +33,7 @@ span {
   justify-content: space-evenly;
   padding: 20px;
 }
-.app__header {
+/*.app__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -41,7 +47,7 @@ span {
   display: flex;
   flex-direction: column;
   justify-content: center;
-}
+} */
 .app__stats {
   display: flex;
   justify-content: space-between;
@@ -49,12 +55,65 @@ span {
 form {
   display: flex;
 }
+#countries {
+  font-size: 12px !important;
+  padding: 4px;
+  width: 130px;
+  margin: 0 5px;
+  border: 1px solid #00000026;
+  border-radius: 4px;
+}
+i {
+  margin-right: 0px;
+  font-size: 14px;
+}
 
+h6 {
+  margin: 0;
+}
+
+.btn {
+  font-size: 12px !important;
+}
+
+.vl {
+  border-left: 1.5px solid rgb(206 206 206);
+  height: 40px;
+  width: 20px;
+  margin: 0px 6px;
+}
+#map-feature {
+  position: absolute;
+  left: 40px;
+  top: 0;
+  background-color: white !important;
+  border: 1px solid #00000024;
+  border-radius: 4px;
+  margin: 15px;
+
+  z-index: 1000 !important;
+}
+
+.hl {
+  border-bottom: 1.5px solid #0000002e;
+  /* height: 40px; */
+  width: 100%;
+  /* margin: 0px 6px; */
+}
+
+.col-auto .my-1 {
+  margin: 0 !important;
+}
+/*
 #countries {
   color: white;
   background-color: #2b6777;
-  width: 100%;
-}
+  width: 50%;
+  z-index: 3000;
+  position: absolute;
+  left: 300px;
+  top: 10px;
+} */
 @media (max-width: 990px) {
   .app {
     flex-direction: column;
@@ -65,16 +124,16 @@ form {
   .app__header {
     justify-content: center;
   }
-  .app__right {
+  /*.app__right {
     width: 100%;
     align-items: center;
   }
   #map-properties {
     width: 100%;
-  }
+  } */
 }
 #flag__container {
-  background-color: #c8d8e4;
+  background-color: white;
   width: 150px;
   height: 100px;
 }
@@ -139,12 +198,66 @@ input:checked + .slider:before {
 .slider.round {
   border-radius: 34px;
 }
+#todaysweather {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  margin-left: 1.2em;
+}
+.highlow {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.restof {
+  display: flex;
+}
+#weather-content {
+  background: url("./assets/icon/skyblue.jpg");
+  background-size: cover;
 
+  color: white;
+  font-weight: 600;
+}
+h5 {
+  color: black;
+}
+#weatherboxleft {
+  flex: 0.5;
+  display: flex;
+  justify-content: center;
+  padding: 2px;
+  opacity: 0.6;
+  border-right: 5px solid white;
+  border-top: 5px solid white;
+}
+#weatherboxleft:hover {
+  opacity: 1;
+}
+#weatherboxright {
+  flex: 0.5;
+  display: flex;
+  justify-content: center;
+  opacity: 0.6;
+  padding: 2px;
+  border-left: 5px solid white;
+  border-top: 5px solid white;
+}
+#weatherboxright:hover {
+  opacity: 1;
+}
+.modal-header {
+  background-color: peachpuff;
+}
+#max {
+  font-weight: 800;
+}
 .slider.round:before {
   border-radius: 50%;
 }
 .accordion__panel {
-  display: flex;
+  display: hidden;
   align-content: stretch;
   justify-content: space-evenly;
   flex-direction: row;
@@ -265,7 +378,7 @@ li {
   box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
   margin: 5px;
 }
-
+/*
 #map-properties {
   color: white;
   width: 90%;
@@ -273,11 +386,29 @@ li {
   border: 1px solid #00000024;
   border-radius: 4px;
   margin: 15px;
-  /* border-left: 4px solid #3a0ca3; */
+  /* border-left: 4px solid #3a0ca3; 
   padding: 10px;
   z-index: 1000;
   display: flex;
   justify-content: center;
+} */
+
+#map-properties {
+  position: absolute;
+  left: 0;
+  bottom: 35px;
+  z-index: 1001;
+  /* width: 295px; */
+  background-color: white !important;
+  border: 1px solid #00000024;
+  border-radius: 4px;
+  margin: 15px;
+  border-left: 4px solid #3a0ca3;
+  padding: 10px;
+  opacity: 0.4;
+}
+#map-properties:hover {
+  opacity: 1;
 }
 .leaflet-popup-content-wrapper {
   color: white;
@@ -321,4 +452,38 @@ label {
 .day {
   text-decoration: underline;
   font-size: 1.2rem;
+}
+.modal {
+  z-index: 1200;
+}
+.daysweather {
+  display: flex;
+  flex-direction: column;
+}
+.forecastday {
+  display: flex;
+}
+#employ {
+  text-align: center;
+  font-weight: bold;
+}
+#piechart {
+  margin: auto;
+}
+.leaflet-bar button {
+  width: 40px !important;
+  height: 40px !important;
+  /* border-radius: 20px; */
+  line-height: 30px;
+}
+
+.js-plotly-plot .plotly div {
+  direction: ltr;
+  font-family: "Open Sans", verdana, arial, sans-serif;
+  margin: auto !important;
+  padding: 0px;
+}
+#weather {
+  font-size: 1.15em;
+  font-weight: 600;
 }

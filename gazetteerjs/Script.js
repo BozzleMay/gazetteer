@@ -5,15 +5,86 @@ option.innerHtml = "Select a country"
 countriesList.appendChild(option);
 
 
+fetch('https://restcountries.eu/rest/v2/all')
+.then((response) => response.json())
+.then((data) => {
+    initialize(data)
+})
+.catch(function (error) {
+    throw (error)
+})
+$.ajax({
+    url: "php/borderSelector.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+        country: $('#selCountry').val(),
+    },
+    
+    success: function(result) {
+       
+            //  if (result.status.name == "ok") {
+            console.log('help', result)
+            
+            console.log('thisis', result.data)
+            let hav = result.data.filter(((a) => a.code === 'France'))
+            console.log(hav)
+        
+            border = L.geoJson(hav[0])
+            mymap.fitBounds(border.getBounds())
+            L.geoJSON(hav, {
+                filter: function(feature, layer) {
+                    return feature.properties
+                }
+            }).addTo(mymap)
 
+           
+        // }
+       
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+        console.log('no way Jose')
+    }
+})
+$.ajax({
+    url: "php/countrySelector.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+        country: $('#selCountry').val(),
+    },
+    
+    success: function(result) {
+       
+            //  if (result.status.name == "ok") {
+            console.log('countries', result)
 
+           for (var i=0; i < result.data.length; i++) {
+               $('#countries').append($('<option>', {
+                   value: result.data[i].code,
+                   text: result.data[i].name
+               }))
+           
+           }
+            // } 
+            
+       
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+        console.log('no way Jose')
+    }
+})
+console.log('g, ', countries)
 
 
 
 // countriesList.innerHTML = '<option value="Select a country">Select A Country</option>'
 
 var displayCountryInfo = (iso2Code) => {
+   
+
     var countryData = countries.find(country => country.alpha2Code === iso2Code)
+    disease(iso2Code)
     document.getElementById('countryName').innerHTML = countryData.name
     document.querySelector('#flag__container img').alt = `Flag of ${countryData.name}`
     document.getElementById('capital').innerHTML = countryData.capital
@@ -25,18 +96,19 @@ var displayCountryInfo = (iso2Code) => {
     document.getElementById('lat').innerText = countryData.latlng[0]
     document.getElementById('long').innerText = countryData.latlng[1]
     mymap.setView([countryData.latlng[0], countryData.latlng[1]], 4)
+    document.getElementById('cityWeather').innerHTML = countryData.capital
 
     console.log(countryData)
 
     document.getElementById('currencyCode').innerHTML = countryData.currencies[0].code
     var countryCode = countryData.currencies.map(currency => currency.code)
 
-    disease(countryData.name)
+    
     localNews(countryData.alpha2Code)
+    
 
 
-
-  /*  const exchangeRate = (countryCode) => {
+    const exchangeRate = (countryCode) => {
         fetch('https://openexchangerates.org/api/latest.json?app_id=ff11d9995b824a64a232e936f69d91f1')
             .then((response) => response.json())
             .then((data) => {
@@ -47,10 +119,11 @@ var displayCountryInfo = (iso2Code) => {
                 throw (error)
             })
     }
-    exchangeRate(countryCode) */
+    exchangeRate(countryCode) 
     wikipedia(countryData.nativeName)
     forecast(countryData.capital)
     statistics(countryData.name)
+    
 
 
 }
@@ -63,28 +136,20 @@ var long = document.getElementById("long").textContent;
 //console.log(lat, long);
 
 
-fetch('https://restcountries.eu/rest/v2/all')
-    .then((response) => response.json())
-    .then((data) => {
-        initialize(data)
-    })
-    .catch(function (error) {
-        throw (error)
-    })
 
 
-const initialize = (countriesData) => {
+ const initialize = (countriesData) => {
     countries = countriesData
 
-    let options = '<option value="Select a country">Select A Country</option>'
+   /* let options = '<option value="Select a country">Select A Country</option>'
     for (let i = 0; i < countries.length; i++) {
         options += `<option value='${countries[i].alpha2Code}'>${countries[i].name}</option>`
     }
-    document.getElementById('countries').innerHTML = options
-    displayCountryInfo('GB')
+    document.getElementById('countries').innerHTML = options */
+   
 
 
-}
+} 
 // console.log(countries);
 
 
@@ -188,14 +253,14 @@ const wikipedia = async (countryName) => {
 } */
 var mymap = L.map('mapid').setView([lat, long], 2);
 
-var options = {
+/*var options = {
     key: '9c469bb50ba04e5c8ddfce02fc12a9b8',
     limit: 10,
     proximity: '51.52255, -0.10249' // favour results near here
-};
+}; 
 // var control = L.Control.openCageSearch(options).addTo(mymap);
 
-/*
+
   var options = {
     key: '9c469bb50ba04e5c8ddfce02fc12a9b8',
     limit: 5,                  // number of results to be displayed
@@ -225,12 +290,19 @@ var options = {
 };
 */
 
-L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
 
+var basemapone = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	maxZoom: 19,
+	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(mymap);
 
-
+var watercolor = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
+	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+	subdomains: 'abcd',
+	minZoom: 1,
+	maxZoom: 16,
+	ext: 'jpg'
+});
 
 
 
@@ -368,7 +440,7 @@ const forecast = (place) => {
     fetch(`https://api.weatherapi.com/v1/forecast.json?key=3f35605d09514f429bd191608210906&q=${place}&days=3&aqi=no&alerts=no`)
         .then((response) => response.json())
         .then((data) => {
-            //    console.log(data)
+              console.log('weateher', data)
             //    console.log(data.forecast.forecastday[1].day.condition.icon)
             document.getElementById('max').innerText = data.forecast.forecastday[0].day.maxtemp_c
             document.getElementById('maxtomorrow').innerText = data.forecast.forecastday[1].day.maxtemp_c
@@ -386,7 +458,7 @@ const forecast = (place) => {
         })
 }
 
-$('#covidCases').prop('checked', false);
+ // $('#covidCases').prop('checked', false);
 
 /* function style(feature) {
      return {
@@ -413,32 +485,35 @@ $(document).ready(function () {
 const covidUrl = "https://disease.sh/v3/covid-19/countries"
 
 // Filter Covid data by clicked feature
-const disease = (selectedCountry) => {
+const disease = (selectedCountryIso) => {
     fetch(covidUrl)
         .then((response) => response.json())
         .then((data) => {
+            console.log('covid', data)
             
 
-            let plab = (data.filter(country => country.country === selectedCountry))
+           // let plab = (data.filter(country => country.country === selectedCountry))
+            let two = (data.filter(country => country.countryInfo.iso2 === selectedCountryIso))
             let mab = (data.map(country => [country.countryInfo.lat, country.countryInfo.long]))
-         
+            console.log('two', two)
 
-           if (plab.length != 0) {
-                document.getElementById('cases').innerHTML = plab[0].cases.toLocaleString("en-US")
-                document.getElementById('casesPerOneMillion').innerHTML = plab[0].casesPerOneMillion.toLocaleString("en-US")
-                document.getElementById('deaths').innerHTML = plab[0].deaths.toLocaleString("en-US")
-                document.getElementById('deathsPerOneMillion').innerHTML = plab[0].deathsPerOneMillion.toLocaleString("en-US")
-                document.getElementById('recovered').innerHTML = plab[0].recovered.toLocaleString("en-US")
-                document.getElementById('recoveredPerOneMillion').innerHTML = plab[0].recoveredPerOneMillion.toLocaleString("en-US")
-            }
+          // console.log('this is', plab)
+                document.getElementById('cases').innerHTML = two[0].cases.toLocaleString("en-US")
+                document.getElementById('casesPerOneMillion').innerHTML = two[0].casesPerOneMillion.toLocaleString("en-US")
+                document.getElementById('deaths').innerHTML = two[0].deaths.toLocaleString("en-US")
+                document.getElementById('deathsPerOneMillion').innerHTML = two[0].deathsPerOneMillion.toLocaleString("en-US")
+                document.getElementById('recovered').innerHTML = two[0].recovered.toLocaleString("en-US")
+                document.getElementById('recoveredPerOneMillion').innerHTML = two[0].recoveredPerOneMillion.toLocaleString("en-US")
+            
         })
 }
 
 // Get the geometries data
+
 fetch(covidUrl)
     .then((response) => response.json())
     .then((data) => {
-        let group1 = L.featureGroup()
+        var group1 = L.featureGroup()
         var geojson = {
             type: "FeatureCollection",
             features: [],
@@ -456,8 +531,9 @@ fetch(covidUrl)
                 fillOpacity: 0.5,
 
             }).addTo(group1).bindPopup(`Cases: ${country.cases.toLocaleString("en-US")}`)
-
-            document.getElementById('covidCases').onclick = function () {
+           
+           
+          document.getElementById('covidCases').onclick = function () {
 
                 if (!this.checked) {
                     if (mymap.hasLayer(group1)) {
@@ -469,9 +545,10 @@ fetch(covidUrl)
                     mymap.addLayer(group1)
 
                 }
-            }
+            } 
         })
     })
+
 /*
  const localNews = (countryabbrev) => {
 
@@ -644,7 +721,10 @@ let countryGeo = $.ajax({
     error: function (xhr) {
         alert(xhr.statusText)
     }
-})
+}) 
+console.log(countryGeo)
+console.log(countryGeo.responseJson)
+
 
 let pointGeo = $.ajax({
     url: './data/sumOlympics.geo.json',
@@ -686,16 +766,73 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
         layer.bindPopup(`Country: ${feature.properties.name}`);
     }
 
+    
+      
+       
     let countrylayer = countryGeo.responseJSON
     let newLayer = null
+    console.log(countrylayer.features)
+    
+
+   // mymap.addLayer(geojson)
+   function polystyle(feature) {
+    return {
+        weight: 5,
+        color: '#fee440',
+        dashArray: '',
+        fillColor: '#001d3d',
+        fillOpacity: 0.9,
+        opacity: 1,
+
+    }
+}
+  
 
     let lastClickedLayer = null
     let group2 = L.featureGroup()
 
-    countriesList.addEventListener('change', event => {
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+            
+        } else {
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+    
+    function showPosition(position) {
+    
+        fetch(`https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}%2C%20${position.coords.longitude}&key=9c469bb50ba04e5c8ddfce02fc12a9b8&language=en&pretty=1`)
+            .then((response) => response.json())
+            .then((data) => {
+                //x.innerHTML = ;
+                console.log('nav', data.results[0].components.country )
+                
+                $('#countries').val(data.results[0].components.country_code.toUpperCase()).change()
+               // let you = L.marker([position.coords.latitude, position.coords.longitude]).addTo(mymap)
+                // you.bindPopup(`Current Location: ${data.results[0].formatted}`)
+                let first = countrylayer.features.filter(place => place.properties.iso_a2 === data.results[0].components.country_code.toUpperCase())
+                L.geoJSON(first, {
+                    style: polystyle
+                }).addTo(group2)
+            
+                mymap.addLayer(group2)
+                displayCountryInfo(data.results[0].components.country_code.toUpperCase())
+                disease(data.results[0].components.country_code.toUpperCase())
+    
+    
+            })
+    
+    
+    }
+    getLocation()
+
+  
+
+   countriesList.addEventListener('change', event => {
         displayCountryInfo(event.target.value)
         let selected = countrylayer.features.filter(place => place.properties.iso_a2 === event.target.value)
-
+        console.log('selected', selected)
         group2.clearLayers()
 
         if (newLayer !== null) {
@@ -711,17 +848,7 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
         }
 
 
-        function polystyle(feature) {
-            return {
-                weight: 5,
-                color: '#fee440',
-                dashArray: '',
-                fillColor: '#001d3d',
-                fillOpacity: 0.9,
-                opacity: 1,
-
-            }
-        }
+       
 
         L.geoJSON(selected, {
             style: polystyle
@@ -731,7 +858,7 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
 
 
 
-    })
+    }) 
 
     // Gold points
     let pointlayer = pointGeo.responseJSON
@@ -815,7 +942,8 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
 
         })
     }
-
+  
+/*
     let geojson = L.geoJson(countrylayer, {
         onEachFeature: onEachFeature,
         style: polyStyle
@@ -823,7 +951,7 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
 
     mymap.addLayer(geojson)
     
-
+*/
     let geojsonPoint = L.geoJson(pointlayer, {
         pointToLayer: IconImage,
         onEachFeature: olympicFeature,
@@ -852,10 +980,10 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
     //   mymap.addLayer(markers)
     //   mymap.addLayer(markersSnow)
 
-    mymap.addLayer(markers)
-    mymap.addLayer(markersSnow)
-    mymap.addLayer(markersCapital)
-    document.getElementById('removelayer').onclick = function () {
+   // mymap.addLayer(markers)
+    //mymap.addLayer(markersSnow)
+   // mymap.addLayer(markersCapital)
+  /*  document.getElementById('removelayer').onclick = function () {
         if (!this.checked) {
             if (mymap.hasLayer(geojsonPoint)) {
                 mymap.removeLayer(geojsonPoint)
@@ -871,7 +999,7 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
 
 
         }
-    }
+    } */
 
     document.getElementById('removeCapital').onclick = function () {
         if (!this.checked) {
@@ -934,29 +1062,7 @@ $(window).load(function () {
 
 var x = document.getElementById("demo");
 
-function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);
-    } else {
-        x.innerHTML = "Geolocation is not supported by this browser.";
-    }
-}
 
-function showPosition(position) {
-
-    fetch(`https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}%2C%20${position.coords.longitude}&key=9c469bb50ba04e5c8ddfce02fc12a9b8&language=en&pretty=1`)
-        .then((response) => response.json())
-        .then((data) => {
-            //x.innerHTML = ;
-            let you = L.marker([position.coords.latitude, position.coords.longitude]).addTo(mymap)
-            you.bindPopup(`Current Location: ${data.results[0].formatted}`)
-
-
-        })
-
-
-}
-getLocation()
 
 function capitalFeature(feature, layer) {
     // does this feature have a property named popupContent?
@@ -999,8 +1105,8 @@ const statistics = (countryStats) => {
               Plotly.newPlot('myDiv', data, layout, {displayModeBar: false});
               document.getElementById('life_expectancy_male').innerHTML = result[0].life_expectancy_male
               document.getElementById('life_expectancy_female').innerHTML = result[0].life_expectancy_female
-              document.getElementById('gdp').innerHTML = result[0].gdp
-              document.getElementById('per_capita').innerHTML = result[0].gdp_per_capita
+              document.getElementById('gdp').innerHTML = result[0].gdp.toLocaleString("en-US")
+              document.getElementById('per_capita').innerHTML = result[0].gdp_per_capita.toLocaleString("en-US")
               document.getElementById('unemployed').innerHTML = result[0].unemployment
               document.getElementById('co2_emissions').innerHTML = result[0].co2_emissions
         },
@@ -1010,3 +1116,16 @@ const statistics = (countryStats) => {
     });
     }
     
+  
+        
+    var baseMaps = {
+        'Original': basemapone,
+        'Water Colour': watercolor
+    }
+    var overlayMaps = {
+        'Summer Olympics': markers,
+        'Winter Olympics': markersSnow,
+        'Capital Cities': markersCapital
+        
+    }
+    L.control.layers(baseMaps, overlayMaps).addTo(mymap)

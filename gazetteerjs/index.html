@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="Styles.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.css" />
@@ -40,26 +41,35 @@
 </head>
 
 <body>
-  <div class="se-pre-con"></div>
+ 
 
   <div class="app">
-    <div class='app__left'>
-      <div class="app__header">
+   
+      
 
-        <h1>Gazetteer</h1>
+        <nav id="map-feature" class="navbar navbar-expand-lg navbar-light bg-light">
+          <!-- Container wrapper -->
+          
+              <!-- Right elements -->
+              <div class="d-flex align-items-center">
+                  
+                  
+                  <div class="col-auto my-1">
+                      <select class="custom-select mr-sm-2" id="countries">
+                        <option value="Select a country">Select A Country</option>
 
-        <table>
-          <td>
-            <select id='countries' onclick="openNav()">
-              <option value="Select a country">Select A Country</option>
+                      </select>
+                  
+              
+          </div>
+      </nav>
 
-            </select>
-          </td>
-        </table>
+        
       </div>
 
       <div id='mapid'></div>
-      <div id="map-properties" class="navbar navbar-expand-lg navbar-light bg-light">
+     <!-- <div id="map-properties" class="navbar navbar-expand-lg navbar-light bg-light">
+        
         <form>
           <div class="labels">
             <input type="checkbox" name="check" class="checkboxes" id="removelayer" checked="true"> <label for="check">
@@ -74,7 +84,7 @@
               Covid Cases</label>
           </div>
         </form>
-      </div>
+      </div>  -->
     </div>
     <div class="app__right">
       <span id='toggle__info' onclick="openNav()">&#9776; Country Information</span>
@@ -88,17 +98,15 @@
 
 
 
-              <div id="flag__container">
-                <img src='' alt=''>
-              </div>
+             
               <div id='info-container'>
                 <p>Country: <span id='countryName'></span></p>
-                <p>Capital: <span id='capital'></span></p>
-                <p>Dialing Code: <span id="dialingcode"></span></p>
-                <p>Population: <span id="population"></span></p>
+                <p>Capital: 
+                <p>Dialing Code: </p>
+                <p>Population: </p>
 
 
-                <p>Continent:<span id="region"></span></p>
+                <p></p>
 
 
                 <p>Capital City Latitude: <span id="lat">0</span></p>
@@ -112,24 +120,20 @@
             <div class="accordion__panel">
               <div id='today'>
                 <p class='day'>Today</p>
-                <p>Conditions: <span id='weather'></span></p>
-                <p><img id='icon' src='' alt=''></p>
-                <p>Max Temp: <span id='max'></span></p>
-                <p>Min Temp: <span id='min'></span></p>
+             
+              
               </div>
               <div id='tomorrow'>
                 <p class='day'>Tomorrow</p>
-                <p>Conditions: <span id='weathertomo'></span></p>
-                <p><img id='icontomo' src='' alt=''></p>
-                <p>Max Temp: <span id='maxtomorrow'></span></p>
-                <p>Min Temp: <span id='mintomorrow'></span></p>
+                <p>Conditions: 
+                <p></p>
+               
               </div>
               <div id='dayafter'>
                 <p class='day'>Day After Tomorrow</p>
                 <p>Conditions: <span id='weathernext'></span></p>
-                <p><img id='iconnext' src='' alt=''></p>
-                <p>Max Temp: <span id='max2'></span></p>
-                <p>Min Temp: <span id='min2'></span></p>
+                <span id='weathertomo'></span></p>
+              
               </div>
             </div>
           </li>
@@ -148,18 +152,13 @@
 
 
             <div class="accordion__panel">
-              <p>Information: <span id='textinfo'>N/A</span></p>
+              <p>Information: 
             </div>
           </li>
           <li>
             <button class='accordion__control'>Covid Statistics</button>
             <div class="accordion__panel">
-              <p>Cases: <span id='cases'></span></p>
-              <p>Cases Per One Million: <span id='casesPerOneMillion'></span></p>
-              <p>Deaths: <span id='deaths'></span></p>
-              <p>Deaths Per One Million: <span id='deathsPerOneMillion'></span></p>
-              <p>Recovered: <span id='recovered'></span></p>
-              <p>Recovered Per One Million: <span id='recoveredPerOneMillion'></span></p>
+             
 
             </div>
           </li>
@@ -188,14 +187,12 @@
           <li>
                         <button class='accordion__control'>Country Statistics</button>
                         <div class="accordion__panel">
-                           <p>Life Expectancy Male: <span id='life_expectancy_male'>N/A</span></p>
-                           <p>Life Expectancy Female: <span id='life_expectancy_female'>N/A</span> </p>
-                           <p>GDP: <span id='gdp'>N/A</span> </p>
-                           <p>GDP per capita: <span id='per_capita'>N/A</span></p>
-                           <p>Unemployment: <span id='unemployed'>N/A</span><span>(%)</span></p>
-                          <p>CO2 Emissions:<span id='co2_emissions'>N/A</span> <span>(million tonnes)</span></p>
-                          <p>Employment Sector:</p>
-                          <div id='myDiv'></div>
+                           <p>Life Expectancy Male: </p>
+                           <p>:  </p>
+                           <p>GDP:  </p>
+                           <p>: </p>
+                           
+                          
                         </div>
                       </li>
 
@@ -208,6 +205,236 @@
 
   </div>
 
+  </div> 
+  <div class="modal" id='countryInformation' tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Country Information</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" >
+          <div id="flag__container">
+            <img src='' alt=''>
+          </div>
+          <table class="table table-striped">
+            
+            <tbody>
+              <tr>
+                <th scope="row">Capital</th>
+                <td></td>
+                <td></td>
+                <td><span id='capital'></span></td>
+              </tr>
+              <tr>
+                <th scope="row">Continent</th>
+                <td></td>
+                <td></td>
+                <td><span id="region"></span></td>
+              </tr>
+              <tr>
+                <th scope="row">Population</th>
+                <td></td>
+                <td></td>
+                <td><span id="population"></span></td>
+                
+              </tr>
+              <tr>
+                <th scope="row">Dialling Code</th>
+                <td></td>
+                <td></td>
+                <td><span id="dialingcode"></span></td>
+              </tr>
+              <tr>
+                <th scope="row" colspan="4" ><span id='textinfo'>N/A</span></th>
+                
+                
+              </tr>
+            </tbody> 
+          </table>
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  <div class="modal" id='weathermodal' tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content" id="weather-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Today's Weather - <span id="cityWeather"></span></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" >
+          
+        
+         
+          <div id='todaysweather'>
+          <img id='icon' src='' alt=''>
+          <div class='highlow'>
+          <p><span id='max'></span>&#8451;</p>
+          <p><span id='min'></span>&#8451;</p>
+            </div>
+          <span id='weather'></span></p>
+          </div>
+            <div class='restof'>
+              <div id='weatherboxleft'>
+                <div class='daysweather'>
+                  <div class='dayof'>
+                  <p>Tomorrow</p>
+                  </div>
+                  <div class='forecastday'>
+                  <img id='icontomo' src='' alt=''>
+                  <div class='highlow'>
+                <p>  <span id='maxtomorrow'></span>&#8451;</p>
+                <p> <span id='mintomorrow'></span>&#8451;</p>
+                    
+                  </div>
+                </div>
+              </div>
+              </div>
+              <div id='weatherboxright'>
+                <div class='daysweather'>
+                  <div class='dayof'>
+                  <p>Day After Tomorrow</p>
+                  </div>
+                  <div class='forecastday'>
+                <p><img id='iconnext' src='' alt=''></p>
+                <div class='highlow'>
+                  <p> <span id='max2'></span>&#8451;</p>
+                  <p> <span id='min2'></span>&#8451;</p>
+                  </div>
+              </div>
+              </div>
+              </div>
+              </div>
+                </div>
+                </div>
+                </div>
+        </div> 
+        <div class="modal" id='covidModal' tabindex="-1" role="dialog">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Covid Cases</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <table class="table table-striped">
+                  
+                  <tbody>
+                    <tr>
+                      <th scope="row">Cases</th>
+                      <td></td>
+                      <td></td>
+                      <td><span id='cases'></span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Cases Per One Million</th>
+                      <td></td>
+                      <td></td>
+                      <td><span id='casesPerOneMillion'></span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Deaths</th>
+                      <td></td>
+                      <td></td>
+                      <td><span id='deaths'></span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Deaths Per One Million</th>
+                      <td></td>
+                      <td></td>
+                      <td><span id='deathsPerOneMillion'></span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Recovered</th>
+                      <td></td>
+                      <td></td>
+                      <td><span id='recovered'></span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Recovered Per One Million</th>
+                      <td></td>
+                      <td></td>
+                      <td><p id='recoveredPerOneMillion'></p></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+    
+      </div>
+    </div>
+  </div>
+  <div class="modal" id='statsModal' tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Statistics</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            
+             
+            <tbody>
+              <tr>
+                <th scope="row">Life Expectancy Male</th>
+                <td></td>
+                <td></td>
+                <td><span id='life_expectancy_male'>N/A</span></td>
+              </tr>
+              <tr>
+                <th scope="row">Life Expectancy Female</th>
+                <td></td>
+                <td></td>
+                <td><span id='life_expectancy_female'>N/A</span></td>
+              </tr>
+              <tr>
+                <th scope="row">GDP (Gross Domestic Product)</th>
+                <td></td>
+                <td></td>
+                <td><span id='gdp'>N/A</span></td>
+              </tr>
+              <th scope="row">GDP per capita</th>
+              <td></td>
+              <td></td>
+              <td><span id='per_capita'>N/A</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Unemployment  </th>
+              <td></td>
+              <td></td>
+              <td><span id='unemployed'>N/A</span><span>(%)</span></td>
+            </tr>
+            <tr>
+              <th scope="row">CO2 Emissions</th>
+              <td></td>
+              <td></td>
+              <td><span id='co2_emissions'>N/A</span> <span>(million tonnes)</span></td>
+            </tr>
+            </tbody>
+          </table>
+          
+          <div id='piechart'>
+          <p id='employ'>Employment Sector</p>
+           <div id='myDiv'></div>
+        </div>
+        
+      </div>
+    </div>
   </div>
   <script type="application/javascript" src="./js/jquery-2.2.3.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -217,11 +444,35 @@
    <script type="application/javascript" src="Script.js"></script>
   <!-- <script type='text/javascript' src='./trial.js'></script> -->
   <script>
-    L.easyButton('fa-home', function (btn, mymap) {
-      mymap.setView([54, -2], 4);
+    L.easyButton('<img src="https://img.icons8.com/ios-filled/50/000000/world.png" style="width:30px; display:inline-flex; margin:auto; padding-top: 3px; vertical-align:middle;"/>', function (btn, mymap) {
+     // mymap.setView([54, -2], 4);
+     console.log('This is button')
+     $('#countryInformation').modal('toggle')
     }).addTo(mymap);
+    L.easyButton('<img src="https://img.icons8.com/ios-filled/50/000000/intense-rain.png" style="width:30px; display:inline-flex; margin:auto; padding-top: 3px; vertical-align:middle;"/>', function (btn, mymap) {
+    
+     // mymap.setView([54, -2], 4);
+     console.log('This is button')
+    $('#weathermodal').modal('show')
 
-    var control = L.Control.openCageSearch(options).addTo(mymap);
+    }).addTo(mymap);
+    L.easyButton('<img src="https://img.icons8.com/ios/50/000000/coronavirus--v1.png alt=covid" style="width:30px; display:inline-flex; margin:auto; padding-top: 3px; vertical-align:middle;"/>', function (btn, mymap) {
+      
+    
+      // mymap.setView([54, -2], 4);
+      console.log('This is button')
+      $('#covidModal').modal('show')
+ 
+     }).addTo(mymap);
+     L.easyButton('<img src="https://img.icons8.com/ios/50/000000/statistics.png"   style="width:30px; display:inline-flex; margin:auto; padding-top: 3px; vertical-align:middle;"/>', function (btn, mymap) {
+      
+    
+      // mymap.setView([54, -2], 4);
+      console.log('This is button')
+      $('#statsModal').modal('show')
+ 
+     }).addTo(mymap);
+   
   </script>
 
 </body>
