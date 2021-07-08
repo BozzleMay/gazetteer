@@ -533,7 +533,7 @@ fetch(covidUrl)
             }).addTo(group1).bindPopup(`Cases: ${country.cases.toLocaleString("en-US")}`)
            
            
-          document.getElementById('covidCases').onclick = function () {
+         /* document.getElementById('covidCases').onclick = function () {
 
                 if (!this.checked) {
                     if (mymap.hasLayer(group1)) {
@@ -545,7 +545,9 @@ fetch(covidUrl)
                     mymap.addLayer(group1)
 
                 }
-            } 
+            } */
+
+            
         })
     })
 
@@ -871,7 +873,7 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
     // Null layer for selected dropdown
     //let newLayer = null
     // Onclick function
-    let OnClickFeature = e => {
+ /*   let OnClickFeature = e => {
         displayCountryInfo(e.target.feature.properties.iso_a2)
         
         group2.clearLayers()
@@ -914,7 +916,7 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
         }).prop('selected', true);
 
     }
-
+*/
 
 
     let IconImage = (feature, latlng) => {
@@ -955,6 +957,7 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
     let geojsonPoint = L.geoJson(pointlayer, {
         pointToLayer: IconImage,
         onEachFeature: olympicFeature,
+        
         
 
     })
@@ -1000,7 +1003,7 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
 
         }
     } */
-
+/*
     document.getElementById('removeCapital').onclick = function () {
         if (!this.checked) {
             if (mymap.hasLayer(geojsonPointCapital)) {
@@ -1035,7 +1038,7 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
 
 })
 
-/*       
+       
     document.getElementById('removelayerSnow').onclick = function () {
         if (!this.checked) {
             if (mymap.hasLayer(geojsonPointSnow)) {
@@ -1050,9 +1053,9 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
                 mymap.addLayer(markersSnow)
             }
         }
-    }
+    } */
 })   
-       */
+       
 $(window).load(function () {
     // Animate loader off screen
     $(".se-pre-con").fadeOut("slow");;
@@ -1116,8 +1119,6 @@ const statistics = (countryStats) => {
     });
     }
     
-  
-        
     var baseMaps = {
         'Original': basemapone,
         'Water Colour': watercolor
@@ -1129,3 +1130,7 @@ const statistics = (countryStats) => {
         
     }
     L.control.layers(baseMaps, overlayMaps).addTo(mymap)
+        
+
+
+   
