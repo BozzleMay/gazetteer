@@ -37,7 +37,7 @@
     href="https://cdn.jsdelivr.net/gh/opencagedata/leaflet-opencage-search@1.4.1/dist/css/L.Control.OpenCageData.Search.min.css" />
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
-
+  <script src="https://npmcdn.com/@turf/turf/turf.min.js"></script>
 </head>
 
 <body>
@@ -86,10 +86,12 @@
         </form>
       </div>  -->
     </div>
+    
     <div class="app__right">
-      <span id='toggle__info' onclick="openNav()">&#9776; Country Information</span>
+     <!-- <span id='toggle__info' onclick="openNav()">&#9776; Country Information</span>
       <div id="side__menu" class="side__menu">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      -->
 
         <ul class="accordion">
           <li>
@@ -106,24 +108,10 @@
                 <p>Population: </p>
 
 
-                <p> <table class="table table-striped">
+               
             
              
-                  <tbody>
-                    <tr>
-                      <th scope="row">Currencies</th>
-                      <td></td>
-                      <td></td>
-                      <td><span id="currencies"></span></td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Exchange Rate </th>
-                      <td></td>
-                      <td></td>
-                      <td>1 USD = <span id='code'></span></td>
-                    </tr>
-                  </tbody> 
-                </table> </p>
+                 
 
 
                 <p>Capital City Latitude: <span id="lat">0</span></p>
@@ -223,6 +211,7 @@
   </div>
 
   </div> 
+
   <div class="modal" id='countryInformation' tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -263,6 +252,18 @@
                 <td></td>
                 <td></td>
                 <td><span id="dialingcode"></span></td>
+              </tr>
+              <tr>
+                <th scope="row">Currencies</th>
+                <td></td>
+                <td></td>
+                <td><span id="currencies"></span></td>
+              </tr>
+              <tr>
+                <th scope="row">Exchange Rate</th>
+                <td></td>
+                <td></td>
+                <td>1 USD = <span id='code'></span>&nbsp;<span id='currCode'></span></td>
               </tr>
               <tr>
                 <th scope="row" colspan="4" ><span id='textinfo'>N/A</span></th>
@@ -454,23 +455,7 @@
       </div>
     </div>
   </div>
-  <div class="modal" id='currencyModal' tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Modal title</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <p>Modal body text goes here.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
-      </div>
-    </div>
-  </div>
+ 
 
   <script type="application/javascript" src="./js/jquery-2.2.3.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>

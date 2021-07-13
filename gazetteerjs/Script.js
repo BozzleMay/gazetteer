@@ -6,46 +6,19 @@ countriesList.appendChild(option);
 
 
 fetch('https://restcountries.eu/rest/v2/all')
-.then((response) => response.json())
-.then((data) => {
-    initialize(data)
-})
-.catch(function (error) {
-    throw (error)
-})
-$.ajax({
-    url: "php/borderSelector.php",
-    type: 'POST',
-    dataType: 'json',
-    data: {
-        country: $('#selCountry').val(),
-    },
-    
-    success: function(result) {
-       
-            //  if (result.status.name == "ok") {
-            console.log('help', result)
-            
-            console.log('thisis', result.data)
-            let hav = result.data.filter(((a) => a.code === 'France'))
-            console.log(hav)
-        
-            border = L.geoJson(hav[0])
-            mymap.fitBounds(border.getBounds())
-            L.geoJSON(hav, {
-                filter: function(feature, layer) {
-                    return feature.properties
-                }
-            }).addTo(mymap)
+    .then((response) => response.json())
+    .then((data) => {
+        initialize(data)
+    })
+    .catch(function (error) {
+        throw (error)
+    })
 
-           
+
+
         // }
-       
-    },
-    error: function (jqXHR, textStatus, errorThrown) {
-        console.log('no way Jose')
-    }
-})
+
+
 $.ajax({
     url: "php/countrySelector.php",
     type: 'POST',
@@ -53,22 +26,22 @@ $.ajax({
     data: {
         country: $('#selCountry').val(),
     },
-    
-    success: function(result) {
-       
-            //  if (result.status.name == "ok") {
-            console.log('countries', result)
 
-           for (var i=0; i < result.data.length; i++) {
-               $('#countries').append($('<option>', {
-                   value: result.data[i].code,
-                   text: result.data[i].name
-               }))
-           
-           }
-            // } 
-            
-       
+    success: function (result) {
+
+        //  if (result.status.name == "ok") {
+        console.log('countries', result)
+
+        for (let i = 0; i < result.data.length; i++) {
+            $('#countries').append($('<option>', {
+                value: result.data[i].code,
+                text: result.data[i].name
+            }))
+
+        }
+        // } 
+
+
     },
     error: function (jqXHR, textStatus, errorThrown) {
         console.log('no way Jose')
@@ -80,10 +53,10 @@ console.log('g, ', countries)
 
 // countriesList.innerHTML = '<option value="Select a country">Select A Country</option>'
 
-var displayCountryInfo = (iso2Code) => {
-   
+let displayCountryInfo = (iso2Code) => {
 
-    var countryData = countries.find(country => country.alpha2Code === iso2Code)
+
+    let countryData = countries.find(country => country.alpha2Code === iso2Code)
     disease(iso2Code)
     document.getElementById('countryName').innerHTML = countryData.name
     document.querySelector('#flag__container img').alt = `Flag of ${countryData.name}`
@@ -97,15 +70,16 @@ var displayCountryInfo = (iso2Code) => {
     document.getElementById('long').innerText = countryData.latlng[1]
     mymap.setView([countryData.latlng[0], countryData.latlng[1]], 4)
     document.getElementById('cityWeather').innerHTML = countryData.capital
+    document.getElementById('currCode').innerHTML = countryData.currencies[0].code
 
     console.log(countryData)
 
     document.getElementById('currencyCode').innerHTML = countryData.currencies[0].code
-    var countryCode = countryData.currencies.map(currency => currency.code)
+    let countryCode = countryData.currencies.map(currency => currency.code)
 
-    
-    localNews(countryData.alpha2Code)
-    
+
+   // localNews(countryData.alpha2Code)
+
 
 
     const exchangeRate = (countryCode) => {
@@ -119,42 +93,42 @@ var displayCountryInfo = (iso2Code) => {
                 throw (error)
             })
     }
-    exchangeRate(countryCode) 
+    exchangeRate(countryCode)
     wikipedia(countryData.nativeName)
     forecast(countryData.capital)
     statistics(countryData.name)
-    
+
 
 
 }
 
 
 
-var lat = document.getElementById("lat").textContent;
-var long = document.getElementById("long").textContent;
+let lat = document.getElementById("lat").textContent;
+let long = document.getElementById("long").textContent;
 
 //console.log(lat, long);
 
 
 
 
- const initialize = (countriesData) => {
+const initialize = (countriesData) => {
     countries = countriesData
 
-   /* let options = '<option value="Select a country">Select A Country</option>'
-    for (let i = 0; i < countries.length; i++) {
-        options += `<option value='${countries[i].alpha2Code}'>${countries[i].name}</option>`
-    }
-    document.getElementById('countries').innerHTML = options */
-   
+    /* let options = '<option value="Select a country">Select A Country</option>'
+     for (let i = 0; i < countries.length; i++) {
+         options += `<option value='${countries[i].alpha2Code}'>${countries[i].name}</option>`
+     }
+     document.getElementById('countries').innerHTML = options */
 
 
-} 
+
+}
 // console.log(countries);
 
 
 
-var popup = L.popup();
+let popup = L.popup();
 
 let polyStyle = {
     fillColor: '#001d3d',
@@ -219,15 +193,15 @@ const wikipedia = (countryName) => {
         data: {
             title: countryName.replace(/\s/g, '+'),
         },
-        success: function(result) {
-           if (result.data[0].length != 0) {
+        success: function (result) {
+            if (result.data[0].length != 0) {
                 //  if (result.status.name == "ok") {
                 console.log('what', result)
 
                 $('#textinfo').html(result.data[0].summary);
                 // } 
             }
-           
+
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.log('no way')
@@ -251,17 +225,17 @@ const wikipedia = async (countryName) => {
         throw(error)
     }
 } */
-var mymap = L.map('mapid').setView([lat, long], 2);
+let mymap = L.map('mapid').setView([lat, long], 2);
 
-/*var options = {
+/*let options = {
     key: '9c469bb50ba04e5c8ddfce02fc12a9b8',
     limit: 10,
     proximity: '51.52255, -0.10249' // favour results near here
 }; 
-// var control = L.Control.openCageSearch(options).addTo(mymap);
+// let control = L.Control.openCageSearch(options).addTo(mymap);
 
 
-  var options = {
+  let options = {
     key: '9c469bb50ba04e5c8ddfce02fc12a9b8',
     limit: 5,                  // number of results to be displayed
     position: 'topright',
@@ -280,7 +254,7 @@ var mymap = L.map('mapid').setView([lat, long], 2);
 }; 
 
  /* control.markGeocode = function(result) {
-    var bbox = result.bbox;
+    let bbox = result.bbox;
     L.polygon([
          bbox.getSouthEast(),
          bbox.getNorthEast(),
@@ -291,17 +265,17 @@ var mymap = L.map('mapid').setView([lat, long], 2);
 */
 
 
-var basemapone = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-	maxZoom: 19,
-	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+let basemapone = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(mymap);
 
-var watercolor = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
-	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-	subdomains: 'abcd',
-	minZoom: 1,
-	maxZoom: 16,
-	ext: 'jpg'
+let watercolor = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
+    attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    subdomains: 'abcd',
+    minZoom: 1,
+    maxZoom: 16,
+    ext: 'jpg'
 });
 
 
@@ -397,7 +371,7 @@ function olympicFeature(feature, layer) {
 }
 
 function winOlympicFeature(feature, layer) {
-    
+
 
     layer.bindPopup(`City: ${feature.properties.name}` + '</br>' + `Year: ${feature.properties.year}`)
 
@@ -419,7 +393,7 @@ function winOlympicFeature(feature, layer) {
       
         
         function onCountrySelection(e){
-            //var layer = e.target
+            //let layer = e.target
             //console.log("Not suururue", layer.feature.properties.iso_a2)
             //displayCountryInfo(layer.feature.properties.iso_a2)
            let layer = e
@@ -440,7 +414,7 @@ const forecast = (place) => {
     fetch(`https://api.weatherapi.com/v1/forecast.json?key=3f35605d09514f429bd191608210906&q=${place}&days=3&aqi=no&alerts=no`)
         .then((response) => response.json())
         .then((data) => {
-              console.log('weateher', data)
+            console.log('weateher', data)
             //    console.log(data.forecast.forecastday[1].day.condition.icon)
             document.getElementById('max').innerText = data.forecast.forecastday[0].day.maxtemp_c
             document.getElementById('maxtomorrow').innerText = data.forecast.forecastday[1].day.maxtemp_c
@@ -458,7 +432,7 @@ const forecast = (place) => {
         })
 }
 
- // $('#covidCases').prop('checked', false);
+// $('#covidCases').prop('checked', false);
 
 /* function style(feature) {
      return {
@@ -490,65 +464,67 @@ const disease = (selectedCountryIso) => {
         .then((response) => response.json())
         .then((data) => {
             console.log('covid', data)
-            
 
-           // let plab = (data.filter(country => country.country === selectedCountry))
+
+            // let plab = (data.filter(country => country.country === selectedCountry))
             let two = (data.filter(country => country.countryInfo.iso2 === selectedCountryIso))
             let mab = (data.map(country => [country.countryInfo.lat, country.countryInfo.long]))
             console.log('two', two)
 
-          // console.log('this is', plab)
-                document.getElementById('cases').innerHTML = two[0].cases.toLocaleString("en-US")
-                document.getElementById('casesPerOneMillion').innerHTML = two[0].casesPerOneMillion.toLocaleString("en-US")
-                document.getElementById('deaths').innerHTML = two[0].deaths.toLocaleString("en-US")
-                document.getElementById('deathsPerOneMillion').innerHTML = two[0].deathsPerOneMillion.toLocaleString("en-US")
-                document.getElementById('recovered').innerHTML = two[0].recovered.toLocaleString("en-US")
-                document.getElementById('recoveredPerOneMillion').innerHTML = two[0].recoveredPerOneMillion.toLocaleString("en-US")
-            
+            // console.log('this is', plab)
+            document.getElementById('cases').innerHTML = two[0].cases.toLocaleString("en-US")
+            document.getElementById('casesPerOneMillion').innerHTML = two[0].casesPerOneMillion.toLocaleString("en-US")
+            document.getElementById('deaths').innerHTML = two[0].deaths.toLocaleString("en-US")
+            document.getElementById('deathsPerOneMillion').innerHTML = two[0].deathsPerOneMillion.toLocaleString("en-US")
+            document.getElementById('recovered').innerHTML = two[0].recovered.toLocaleString("en-US")
+            document.getElementById('recoveredPerOneMillion').innerHTML = two[0].recoveredPerOneMillion.toLocaleString("en-US")
+
         })
 }
 
 // Get the geometries data
+let group1 = L.featureGroup()
+
+var circleLayer = {
+    "type":"FeatureCollection",
+    "features": ''
+};
 
 fetch(covidUrl)
     .then((response) => response.json())
     .then((data) => {
-        var group1 = L.featureGroup()
-        var geojson = {
-            type: "FeatureCollection",
-            features: [],
-        };
-        let circleLayer = data.map(country => {
+        console.log('data',data)
+        let ty = data.map(country => {
             let lat = country.countryInfo.lat
             let long = country.countryInfo.long
             let c = country.cases
-         
+
+            return { 
+                "type": "Feature","geometry": {"type": "Point","coordinates": [long,lat]},"properties": {"country":country.country,"cases":c} 
+            }
             // return [[long,lat],c]
-           let y = L.circle([lat,long], {
-                color: 'red',
-                fillColor: '#f03',
-                radius: `${Math.sqrt(country.cases * 1500)}`,
-                fillOpacity: 0.5,
+          
 
-            }).addTo(group1).bindPopup(`Cases: ${country.cases.toLocaleString("en-US")}`)
            
-           
-         /* document.getElementById('covidCases').onclick = function () {
-
-                if (!this.checked) {
-                    if (mymap.hasLayer(group1)) {
-                        mymap.removeLayer(group1)
-                    }
-
-                } else {
-
-                    mymap.addLayer(group1)
-
-                }
-            } */
-
             
+
+            /* document.getElementById('covidCases').onclick = function () {
+   
+                   if (!this.checked) {
+                       if (mymap.hasLayer(group1)) {
+                           mymap.removeLayer(group1)
+                       }
+   
+                   } else {
+   
+                       mymap.addLayer(group1)
+   
+                   }
+               } */
+               
+
         })
+        circleLayer.features = ty
     })
 
 /*
@@ -578,7 +554,6 @@ fetch(covidUrl)
             }
         })
 }
-*/
 
 const localNews = (countryabbrev) => {
     $.ajax({
@@ -588,47 +563,47 @@ const localNews = (countryabbrev) => {
         data: {
             results: countryabbrev,
         },
-        success: function(result) {
+        success: function (result) {
             {
                 //  if (result.status.name == "ok") {
                 console.log('this', result)
-               
+
                 if (result.data != 0) {
                     document.getElementById('headline').innerHTML = result.data[0].title
                     document.querySelector('#news__link').href = result.data[0].link
-               
+
                     if (result.data[0].image_url != null) {
                         document.querySelector('#news__container img').src = result.data[0].image_url
-                  }
-               }
-               if (result.data != 0) {
-                document.getElementById('headline1').innerHTML = result.data[1].title
-                document.querySelector('#news__link1').href = result.data[1].link
-           
-                if (result.data[1].image_url != null) {
-                    document.querySelector('#news__container1 img').src = result.data[1].image_url
-              }
-           }
-           if (result.data != 0) {
-            document.getElementById('headline2').innerHTML = result.data[2].title
-            document.querySelector('#news__link2').href = result.data[2].link
-       
-            if (result.data[2].image_url != null) {
-                document.querySelector('#news__container2 img').src = result.data[2].image_url
-          }
-       }
-              
+                    }
+                }
+                if (result.data != 0) {
+                    document.getElementById('headline1').innerHTML = result.data[1].title
+                    document.querySelector('#news__link1').href = result.data[1].link
+
+                    if (result.data[1].image_url != null) {
+                        document.querySelector('#news__container1 img').src = result.data[1].image_url
+                    }
+                }
+                if (result.data != 0) {
+                    document.getElementById('headline2').innerHTML = result.data[2].title
+                    document.querySelector('#news__link2').href = result.data[2].link
+
+                    if (result.data[2].image_url != null) {
+                        document.querySelector('#news__container2 img').src = result.data[2].image_url
+                    }
+                }
+
                 // } 
             }
-            
-           
+
+
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.log('no way')
         }
     })
 }
-/*
+
 
 const localNews = (countryabbrev) => {
 fetch(`https://newsdata.io/api/1/news?apikey=${newsAPI}&country=${countryabbrev}`)
@@ -636,10 +611,10 @@ fetch(`https://newsdata.io/api/1/news?apikey=${newsAPI}&country=${countryabbrev}
 .then((data) => {
 console.log('newsAPI', data)
 })
-} */
+} 
 function openNav() {
-    if (document.getElementById('countries').innerHTML != 'Select A Country' ){
-    document.getElementById("side__menu").style.width = "100%"
+    if (document.getElementById('countries').innerHTML != 'Select A Country') {
+        document.getElementById("side__menu").style.width = "100%"
 
     }
 
@@ -651,7 +626,7 @@ function closeNav() {
 
 
 }
-
+*/
 let markers = new L.markerClusterGroup({
     spiderfyOnMaxZoom: true,
     removeOutsideVisibleBounds: false,
@@ -662,7 +637,7 @@ let markers = new L.markerClusterGroup({
     iconCreateFunction: cluster => {
         let markers = cluster.getAllChildMarkers();
         let first = iconImage.iconUrl
-       
+
         let html =
             `<img class="first-icon-cluster" src="${first}"></img><div class="circleGold">${markers.length}</div>`;
         return L.divIcon({
@@ -683,7 +658,7 @@ let markersSnow = L.markerClusterGroup({
     iconCreateFunction: cluster => {
         let markers = cluster.getAllChildMarkers();
         let first = iconImageSnow.iconUrl
-        
+
         let html =
             `<img class="first-icon-cluster" src="${first}"></img><div class="circleSnow">${markers.length}</div>`;
         return L.divIcon({
@@ -704,7 +679,7 @@ let markersCapital = L.markerClusterGroup({
     iconCreateFunction: cluster => {
         let markers = cluster.getAllChildMarkers();
         let first = capitalImage.iconUrl
-        
+
         let html =
             `<img class="first-icon-cluster" src="${first}"></img><div class="circleCapital">${markers.length}</div>`;
         return L.divIcon({
@@ -723,7 +698,7 @@ let countryGeo = $.ajax({
     error: function (xhr) {
         alert(xhr.statusText)
     }
-}) 
+})
 console.log(countryGeo)
 console.log(countryGeo.responseJson)
 
@@ -768,294 +743,412 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
         layer.bindPopup(`Country: ${feature.properties.name}`);
     }
 
-    
-      
-       
+
     let countrylayer = countryGeo.responseJSON
     let newLayer = null
-    console.log(countrylayer.features)
-    
 
-   // mymap.addLayer(geojson)
-   function polystyle(feature) {
-    return {
-        weight: 5,
-        color: '#fee440',
-        dashArray: '',
-        fillColor: '#001d3d',
-        fillOpacity: 0.9,
-        opacity: 1,
+    let listCount = countrylayer.features.map(a => {
+        let prop = a.properties
+        let name = prop.name
+        let iso = prop.iso_a2
 
-    }
-}
-  
+        let opt = `<option value='${iso}'>${name}</option>`
+        // let opt = document.createElement('options')
+        // opt.innerText = name
+        // opt.value = iso
 
-    let lastClickedLayer = null
-    let group2 = L.featureGroup()
+        return opt
+    })
 
-    function getLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-            
-        } else {
-            x.innerHTML = "Geolocation is not supported by this browser.";
-        }
-    }
-    
-    function showPosition(position) {
-    
-        fetch(`https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}%2C%20${position.coords.longitude}&key=9c469bb50ba04e5c8ddfce02fc12a9b8&language=en&pretty=1`)
-            .then((response) => response.json())
-            .then((data) => {
-                //x.innerHTML = ;
-                console.log('nav', data.results[0].components.country )
-                
-                $('#countries').val(data.results[0].components.country_code.toUpperCase()).change()
-               // let you = L.marker([position.coords.latitude, position.coords.longitude]).addTo(mymap)
-                // you.bindPopup(`Current Location: ${data.results[0].formatted}`)
-                let first = countrylayer.features.filter(place => place.properties.iso_a2 === data.results[0].components.country_code.toUpperCase())
-                L.geoJSON(first, {
-                    style: polystyle
-                }).addTo(group2)
-            
-                mymap.addLayer(group2)
-                displayCountryInfo(data.results[0].components.country_code.toUpperCase())
-                disease(data.results[0].components.country_code.toUpperCase())
-    
-    
-            })
-    
-    
-    }
-    getLocation()
+    countriesList.innerHTML = listCount.join("")
 
-  
-
-   countriesList.addEventListener('change', event => {
-        displayCountryInfo(event.target.value)
-        let selected = countrylayer.features.filter(place => place.properties.iso_a2 === event.target.value)
-        console.log('selected', selected)
-        group2.clearLayers()
-
-        if (newLayer !== null) {
-            mymap.removeLayer(newLayer)
-
-
-        }
-        if (lastClickedLayer !== null) {
-
-            lastClickedLayer.setStyle(polyStyle)
-
-
-        }
-
-
-       
-
-        L.geoJSON(selected, {
-            style: polystyle
-        }).addTo(group2)
-
-        mymap.addLayer(group2)
-
-
-
-    }) 
-
+    let ff = []
+    // console.log('fff',ff)
+    let covCase = circleLayer
     // Gold points
     let pointlayer = pointGeo.responseJSON
     // Snowlake points
     let pointlayerSnow = pointGeoSnow.responseJSON
 
     let capitallayer = capital.responseJSON
+    
+    let SplitPoints = (cCode) => {
+        let selected = cCode
+        
+        group2.clearLayers()
+
+
+        if (newLayer !== null) {
+            mymap.removeLayer(newLayer)
+        }
+        
+        if (lastClickedLayer !== null) {
+            lastClickedLayer.setStyle(polyStyle)
+        }
+
+        let IconImage = (feature, latlng) => {
+            let myIcon = L.icon(iconImage)
+
+            return L.marker(latlng, {
+                icon: myIcon
+
+            })
+        }
+
+        let IconImageSnow = (feature, latlng) => {
+            let myIcon = L.icon(iconImageSnow)
+            return L.marker(latlng, {
+                icon: myIcon
+            })
+        }
+
+        let CapitalImage = (feature, latlng) => {
+            let myIcon = L.icon(capitalImage)
+
+            return L.marker(latlng, {
+                icon: myIcon
+
+            })
+        }
+
+        let pol = L.geoJSON(null, {
+            style: polystyle
+        })
+
+        pol.addData(selected)
+
+        pol.eachLayer(function (layer) {
+
+            let coords = layer.feature.geometry.coordinates;
+
+            let polygon = null
+
+            if (coords.length > 1) {
+                polygon = turf.multiPolygon(coords);
+            } else {
+                polygon = turf.polygon(coords);
+            }
+
+            let polygon2 = L.geoJson(polygon, { color: 'red' });
+
+            let pointWithin1 = turf.within(pointlayer, polygon2.toGeoJSON());
+            let pointWithin2 = turf.within(pointlayerSnow, polygon2.toGeoJSON());
+        
+            let pointWithin3 = turf.within(capitallayer, polygon2.toGeoJSON());
+            let pointWithin4 = turf.within(covCase, polygon2.toGeoJSON());
+
+        
+            // alert("results "+JSON.stringify(ptsWithin4));
+            let geojsonPoint = L.geoJson(pointWithin1, {
+                pointToLayer: IconImage,
+                onEachFeature: olympicFeature,
+            })
+
+            let geojsonPointSnow = L.geoJson(pointWithin2, {
+                pointToLayer: IconImageSnow,
+                onEachFeature: winOlympicFeature
+            })
+
+            let geojsonPointCapital = L.geoJson(pointWithin3, {
+                pointToLayer: CapitalImage,
+                onEachFeature: capitalFeature
+            })
+
+            // var geojsonMarkerOptions = 
+            // `${Math.sqrt(pointWithin4.features[0].properties.cases * 1500)}`
+            // L.circle(pointWithin4).addTo(group1)
+        let newCircle =  L.geoJSON(pointWithin4, {
+                pointToLayer: function (feature, latlng) {
+                    console.log('ff',feature.properties.cases)
+                    return L.circle(latlng, {
+                        color: 'red',
+                        fillColor: '#f03',
+                        radius: `${Math.sqrt(feature.properties.cases * 1500)}`,
+                        fillOpacity: 0.5,
+                    }).addTo(group1).bindPopup(`Cases: ${feature.properties.cases.toLocaleString("en-US")}`)
+                    
+                }
+            })
+            
+            L.geoJSON(selected, {
+                style: polystyle
+            }).addTo(group2)
+            
+            mymap.addLayer(group2)
+
+            if(markers.getLayers().length > 0 ||
+            markersSnow.getLayers().length > 0 ||
+            markersCapital.getLayers().length > 0 ||
+            group1.getLayers().length > 0 ) {
+                markers.clearLayers()
+                markersSnow.clearLayers()
+                markersCapital.clearLayers()
+                group1.clearLayers()
+            }
+
+            markers.addLayer(geojsonPoint)
+            markersSnow.addLayer(geojsonPointSnow)
+            markersCapital.addLayer(geojsonPointCapital)
+            group1.addLayer(newCircle)
+            
+        })
+    }
+    function polystyle(feature) {
+        return {
+            weight: 5,
+            color: '#fee440',
+            dashArray: '',
+            fillColor: '#001d3d',
+            fillOpacity: 0.9,
+            opacity: 1,
+
+        }
+    }
+
+    let lastClickedLayer = null
+    let group2 = L.featureGroup()
+    
+    let c = []
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+            console.log('llllll', navigator.geolocation.getCurrentPosition(showPosition))
+        } else {
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+
+
+    
+
+    function showPosition(position) {
+
+        fetch(`https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}%2C%20${position.coords.longitude}&key=9c469bb50ba04e5c8ddfce02fc12a9b8&language=en&pretty=1`)
+            .then((response) => response.json())
+            .then((data) => {
+                //x.innerHTML = ;
+                console.log('data', data)
+                console.log('nav', data.results[0].components)
+
+                $('#countries').val(data.results[0].components.country_code.toUpperCase()).change()
+                // let you = L.marker([position.coords.latitude, position.coords.longitude]).addTo(mymap)
+                // you.bindPopup(`Current Location: ${data.results[0].formatted}`)
+                let first = countrylayer.features.filter(place => place.properties.iso_a2 === data.results[0].components.country_code.toUpperCase())
+                ff.push(first)
+                L.geoJSON(first, {
+                    style: polystyle
+                }).addTo(group2)
+
+                mymap.addLayer(group2)
+                displayCountryInfo(data.results[0].components.country_code.toUpperCase())
+                disease(data.results[0].components.country_code.toUpperCase())
+                SplitPoints(first)
+
+            })
+    }
+    getLocation()
+
+    countriesList.addEventListener('change', event => {
+        displayCountryInfo(event.target.value)
+       let selected = countrylayer.features.filter(place => place.properties.iso_a2 === event.target.value)
+      
+       SplitPoints(selected)
+    })
+
+    // , {
+    //     color: 'red',
+    //     fillColor: '#f03',
+    //     radius: `${Math.sqrt(pointWithin4.features[0].properties.cases * 1500)}`,
+    //     fillOpacity: 0.5,
+    // }
 
     //let lastClickedLayer = null
     // Null layer for selected dropdown
     //let newLayer = null
     // Onclick function
- /*   let OnClickFeature = e => {
-        displayCountryInfo(e.target.feature.properties.iso_a2)
-        
-        group2.clearLayers()
-        // Default style
-        if (lastClickedLayer !== null) {
+    /*   let OnClickFeature = e => {
+           displayCountryInfo(e.target.feature.properties.iso_a2)
+           
+           group2.clearLayers()
+           // Default style
+           if (lastClickedLayer !== null) {
+   
+               lastClickedLayer.setStyle(polyStyle);
+           }
+           // Remove added layer from dropdown function
+           if (newLayer !== null) {
+               mymap.removeLayer(newLayer)
+   
+           }
+   
+           mymap.fitBounds(e.target.getBounds());
+   
+           // Set layer target
+           let countrylayer = e.target;
+          
+           // Replace null layer
+           lastClickedLayer = countrylayer;
+           // Set new style when the geojson clicked
+           countrylayer.setStyle(polyStyleOnclick);
+   
+           let cNcC = {}
+   
+           for (let i in countriesList.options) {
+               let list = countriesList.options[i].innerText
+               let val = countriesList.options[i].value
+               cNcC[list] = val
+           }
+   
+           let cFil = cNcC[countrylayer.feature.properties.name]
+          
+           displayCountryInfo(cFil);
+   
+           $("select option").filter(function () {
+               //may want to use $.trim in here
+               return $(this).text() == countrylayer.feature.properties.name;
+           }).prop('selected', true);
+   
+       }
+   */
 
-            lastClickedLayer.setStyle(polyStyle);
-        }
-        // Remove added layer from dropdown function
-        if (newLayer !== null) {
-            mymap.removeLayer(newLayer)
 
-        }
+    // let IconImage = (feature, latlng) => {
+    //     let myIcon = L.icon(iconImage)
 
-        mymap.fitBounds(e.target.getBounds());
+    //     return L.marker(latlng, {
+    //         icon: myIcon
 
-        // Set layer target
-        let countrylayer = e.target;
-       
-        // Replace null layer
-        lastClickedLayer = countrylayer;
-        // Set new style when the geojson clicked
-        countrylayer.setStyle(polyStyleOnclick);
+    //     })
 
-        let cNcC = {}
+    // }
 
-        for (let i in countriesList.options) {
-            let list = countriesList.options[i].innerText
-            let val = countriesList.options[i].value
-            cNcC[list] = val
-        }
+    // let IconImageSnow = (feature, latlng) => {
+    //     let myIcon = L.icon(iconImageSnow)
+    //     return L.marker(latlng, {
+    //         icon: myIcon
+    //     })
+    // }
 
-        let cFil = cNcC[countrylayer.feature.properties.name]
-       
-        displayCountryInfo(cFil);
+    // let CapitalImage = (feature, latlng) => {
+    //     let myIcon = L.icon(capitalImage)
 
-        $("select option").filter(function () {
-            //may want to use $.trim in here
-            return $(this).text() == countrylayer.feature.properties.name;
-        }).prop('selected', true);
+    //     return L.marker(latlng, {
+    //         icon: myIcon
 
-    }
-*/
+    //     })
+    // }
 
-
-    let IconImage = (feature, latlng) => {
-        let myIcon = L.icon(iconImage)
-
-        return L.marker(latlng, {
-            icon: myIcon
-
+    /*
+        let geojson = L.geoJson(countrylayer, {
+            onEachFeature: onEachFeature,
+            style: polyStyle
         })
-
-    }
-
-    let IconImageSnow = (feature, latlng) => {
-        let myIcon = L.icon(iconImageSnow)
-        return L.marker(latlng, {
-            icon: myIcon
-        })
-    }
-
-    let CapitalImage = (feature, latlng) => {
-        let myIcon = L.icon(capitalImage)
-
-        return L.marker(latlng, {
-            icon: myIcon
-
-        })
-    }
-  
-/*
-    let geojson = L.geoJson(countrylayer, {
-        onEachFeature: onEachFeature,
-        style: polyStyle
-    })
-
-    mymap.addLayer(geojson)
     
-*/
-    let geojsonPoint = L.geoJson(pointlayer, {
-        pointToLayer: IconImage,
-        onEachFeature: olympicFeature,
+        mymap.addLayer(geojson)
         
-        
-
-    })
-
-    let geojsonPointCapital = L.geoJson(capitallayer, {
-        pointToLayer: CapitalImage,
-        onEachFeature: capitalFeature
-
-    })
+    */
+    // let geojsonPoint = L.geoJson(pointlayer, {
+    //     pointToLayer: IconImage,
+    //     onEachFeature: olympicFeature,
 
 
-    let geojsonPointSnow = L.geoJson(pointlayerSnow, {
-        pointToLayer: IconImageSnow,
-        onEachFeature: winOlympicFeature
-    })
+
+    // })
+
+    // let geojsonPointCapital = L.geoJson(capitallayer, {
+    //     pointToLayer: CapitalImage,
+    //     onEachFeature: capitalFeature
+
+    // })
 
 
-    
-    
-     markers.addLayer(geojsonPoint)
-     markersSnow.addLayer(geojsonPointSnow)
-     markersCapital.addLayer(geojsonPointCapital)
+    // let geojsonPointSnow = L.geoJson(pointlayerSnow, {
+    //     pointToLayer: IconImageSnow,
+    //     onEachFeature: winOlympicFeature
+    // })
+
+
+
+
+    //  markers.addLayer(geojsonPoint)
+    //  markersSnow.addLayer(geojsonPointSnow)
+    //  markersCapital.addLayer(geojsonPointCapital)
     //   mymap.addLayer(markers)
     //   mymap.addLayer(markersSnow)
 
-   // mymap.addLayer(markers)
+    // mymap.addLayer(markers)
     //mymap.addLayer(markersSnow)
-   // mymap.addLayer(markersCapital)
-  /*  document.getElementById('removelayer').onclick = function () {
-        if (!this.checked) {
-            if (mymap.hasLayer(geojsonPoint)) {
-                mymap.removeLayer(geojsonPoint)
+    // mymap.addLayer(markersCapital)
+    /*  document.getElementById('removelayer').onclick = function () {
+          if (!this.checked) {
+              if (mymap.hasLayer(geojsonPoint)) {
+                  mymap.removeLayer(geojsonPoint)
+              } else {
+                  mymap.removeLayer(markers)
+              }
+          } else {
+              if (mymap.hasLayer(geojsonPoint)) {
+                  mymap.addLayer(geojsonPoint)
+              } else {
+                  mymap.addLayer(markers)
+              }
+  
+  
+          }
+      } */
+    /*
+        document.getElementById('removeCapital').onclick = function () {
+            if (!this.checked) {
+                if (mymap.hasLayer(geojsonPointCapital)) {
+                    mymap.removeLayer(geojsonPointCapital)
+                }else {
+                    mymap.removeLayer(markersCapital)
+                }
             } else {
-                mymap.removeLayer(markers)
-            }
-        } else {
-            if (mymap.hasLayer(geojsonPoint)) {
-                mymap.addLayer(geojsonPoint)
-            } else {
-                mymap.addLayer(markers)
-            }
-
-
-        }
-    } */
-/*
-    document.getElementById('removeCapital').onclick = function () {
-        if (!this.checked) {
-            if (mymap.hasLayer(geojsonPointCapital)) {
-                mymap.removeLayer(geojsonPointCapital)
-            }else {
-                mymap.removeLayer(markersCapital)
-            }
-        } else {
-            if (mymap.hasLayer(geojsonPointCapital)) {
-                mymap.addLayer(geojsonPointCapital)
-            } else {
-                mymap.addLayer(markersCapital)
-            }
-        }
-    }
-
-    document.getElementById('removelayerSnow').onclick = function () {
-        if (!this.checked) {
-            if (mymap.hasLayer(geojsonPointSnow)) {
-                mymap.removeLayer(geojsonPointSnow)
-            }else {
-                mymap.removeLayer(markersSnow)
-            }
-        } else {
-            if (mymap.hasLayer(geojsonPointSnow)) {
-                mymap.addLayer(geojsonPointSnow)
-            } else {
-                mymap.addLayer(markersSnow)
+                if (mymap.hasLayer(geojsonPointCapital)) {
+                    mymap.addLayer(geojsonPointCapital)
+                } else {
+                    mymap.addLayer(markersCapital)
+                }
             }
         }
-    }
-
+    
+        document.getElementById('removelayerSnow').onclick = function () {
+            if (!this.checked) {
+                if (mymap.hasLayer(geojsonPointSnow)) {
+                    mymap.removeLayer(geojsonPointSnow)
+                }else {
+                    mymap.removeLayer(markersSnow)
+                }
+            } else {
+                if (mymap.hasLayer(geojsonPointSnow)) {
+                    mymap.addLayer(geojsonPointSnow)
+                } else {
+                    mymap.addLayer(markersSnow)
+                }
+            }
+        }
+    
+    })
+    
+           
+        document.getElementById('removelayerSnow').onclick = function () {
+            if (!this.checked) {
+                if (mymap.hasLayer(geojsonPointSnow)) {
+                    mymap.removeLayer(geojsonPointSnow)
+                } else {
+                    mymap.removeLayer(markersSnow)
+                }
+            } else {
+                if (mymap.hasLayer(geojsonPointSnow)) {
+                    mymap.addLayer(geojsonPointSnow)
+                } else {
+                    mymap.addLayer(markersSnow)
+                }
+            }
+        } */
 })
 
-       
-    document.getElementById('removelayerSnow').onclick = function () {
-        if (!this.checked) {
-            if (mymap.hasLayer(geojsonPointSnow)) {
-                mymap.removeLayer(geojsonPointSnow)
-            } else {
-                mymap.removeLayer(markersSnow)
-            }
-        } else {
-            if (mymap.hasLayer(geojsonPointSnow)) {
-                mymap.addLayer(geojsonPointSnow)
-            } else {
-                mymap.addLayer(markersSnow)
-            }
-        }
-    } */
-})   
-       
 $(window).load(function () {
     // Animate loader off screen
     $(".se-pre-con").fadeOut("slow");;
@@ -1063,7 +1156,7 @@ $(window).load(function () {
 
 
 
-var x = document.getElementById("demo");
+let x = document.getElementById("demo");
 
 
 
@@ -1079,58 +1172,58 @@ const statistics = (countryStats) => {
     $.ajax({
         method: 'GET',
         url: `https://api.api-ninjas.com/v1/country?name=${countryStats}`,
-        headers: { 'X-Api-Key': 'GxDMLyqjl2t4Q5miXapOX9nqUIO38gIHTw4fRqIV'},
+        headers: { 'X-Api-Key': 'GxDMLyqjl2t4Q5miXapOX9nqUIO38gIHTw4fRqIV' },
         contentType: 'application/json',
-        success: function(result) {
-     
-            var data = [{
+        success: function (result) {
+
+            let data = [{
                 values: [result[0].employment_agriculture, result[0].employment_industry, result[0].employment_services],
                 labels: ['Agriculture', 'Industry', 'Services'],
                 type: 'pie',
-                
-              }];
-              
-              var layout = {
+
+            }];
+
+            let layout = {
                 height: 200,
                 width: 200,
                 autosize: false,
                 margin: {
-                l: 20,
-                r: 50,
-                t: 15,
-                b: 100
+                    l: 20,
+                    r: 50,
+                    t: 15,
+                    b: 100
                 },
                 showLegend: false,
                 paper_bgcolor: 'rgba(0,0,0,0)',
-                plot_bgcolor:'rgba(0,0,0,0)'
-              };
-              
-              Plotly.newPlot('myDiv', data, layout, {displayModeBar: false});
-              document.getElementById('life_expectancy_male').innerHTML = result[0].life_expectancy_male
-              document.getElementById('life_expectancy_female').innerHTML = result[0].life_expectancy_female
-              document.getElementById('gdp').innerHTML = result[0].gdp.toLocaleString("en-US")
-              document.getElementById('per_capita').innerHTML = result[0].gdp_per_capita.toLocaleString("en-US")
-              document.getElementById('unemployed').innerHTML = result[0].unemployment
-              document.getElementById('co2_emissions').innerHTML = result[0].co2_emissions
+                plot_bgcolor: 'rgba(0,0,0,0)'
+            };
+
+            Plotly.newPlot('myDiv', data, layout, { displayModeBar: false });
+            document.getElementById('life_expectancy_male').innerHTML = result[0].life_expectancy_male
+            document.getElementById('life_expectancy_female').innerHTML = result[0].life_expectancy_female
+            document.getElementById('gdp').innerHTML = result[0].gdp.toLocaleString("en-US")
+            document.getElementById('per_capita').innerHTML = result[0].gdp_per_capita.toLocaleString("en-US")
+            document.getElementById('unemployed').innerHTML = result[0].unemployment
+            document.getElementById('co2_emissions').innerHTML = result[0].co2_emissions
         },
         error: function ajaxError(jqXHR) {
             console.error('Error: ', jqXHR.responseText);
         }
     });
-    }
-    
-    var baseMaps = {
-        'Original': basemapone,
-        'Water Colour': watercolor
-    }
-    var overlayMaps = {
-        'Summer Olympics': markers,
-        'Winter Olympics': markersSnow,
-        'Capital Cities': markersCapital
-        
-    }
-    L.control.layers(baseMaps, overlayMaps).addTo(mymap)
-        
+}
+
+let baseMaps = {
+    'Original': basemapone,
+    'Water Colour': watercolor 
+}
+let overlayMaps = {
+    'Summer Olympics': markers,
+    'Winter Olympics': markersSnow,
+    'Capital Cities': markersCapital,
+    'Covid Case': group1
+}
+
+L.control.layers(baseMaps, overlayMaps).addTo(mymap)
 
 
-   
+
