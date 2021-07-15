@@ -12,7 +12,9 @@
         $temp['code'] = $feature["properties"]['iso_a2'];
         $temp['geometry'] = $feature["geometry"]['coordinates'];
 
+        if ($temp['code'] ===  $_REQUEST['country']){
         array_push($borders, $temp);
+        }
         
     }
 

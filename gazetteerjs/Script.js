@@ -4,6 +4,7 @@ let option = document.createElement("option");
 option.innerHtml = "Select a country"
 countriesList.appendChild(option);
 
+let border;
 
 fetch('https://restcountries.eu/rest/v2/all')
     .then((response) => response.json())
@@ -30,7 +31,7 @@ $.ajax({
     success: function (result) {
 
         //  if (result.status.name == "ok") {
-        console.log('countries', result)
+        
 
         for (let i = 0; i < result.data.length; i++) {
             $('#countries').append($('<option>', {
@@ -44,11 +45,38 @@ $.ajax({
 
     },
     error: function (jqXHR, textStatus, errorThrown) {
+       
+    }
+})
+
+$('#countries').click(function() {
+ $.ajax({
+    url: "php/borderSelector.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+        country: $('#countries').val(),
+    },
+
+    success: function (result) {
+
+        //  if (result.status.name == "ok") {
+        console.log('countries', result)
+    
+     
+        
+      
+        // } 
+
+
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
         console.log('no way Jose')
     }
 })
-console.log('g, ', countries)
+})
 
+console.log(border)
 
 
 // countriesList.innerHTML = '<option value="Select a country">Select A Country</option>'
@@ -97,6 +125,7 @@ let displayCountryInfo = (iso2Code) => {
     wikipedia(countryData.nativeName)
     forecast(countryData.capital)
     statistics(countryData.name)
+    airports(countryData.name)
 
 
 
@@ -115,14 +144,6 @@ let long = document.getElementById("long").textContent;
 const initialize = (countriesData) => {
     countries = countriesData
 
-    /* let options = '<option value="Select a country">Select A Country</option>'
-     for (let i = 0; i < countries.length; i++) {
-         options += `<option value='${countries[i].alpha2Code}'>${countries[i].name}</option>`
-     }
-     document.getElementById('countries').innerHTML = options */
-
-
-
 }
 // console.log(countries);
 
@@ -132,7 +153,7 @@ let popup = L.popup();
 
 let polyStyle = {
     fillColor: '#001d3d',
-    fillOpacity: 0.9,
+    fillOpacity: 0.4,
     weight: 1,
     color: 'white',
     opacity: 1
@@ -141,7 +162,7 @@ let polyStyleOnclick = {
     weight: 5,
     color: '#fee440',
     dashArray: '',
-    fillOpacity: 0.7
+    fillOpacity: 0.4
 }
 
 // Write function to set Properties of the Popup
@@ -156,6 +177,14 @@ let iconImage = {
 let capitalImage = {
     iconUrl: 'assets/icon/capital-city.png',
     iconSize: [15, 15], // width and height of the image in pixels
+    shadowSize: [35, 20], // width, height of optional shadow image
+    iconAnchor: [15, 15], // point of the icon which will correspond to marker's location
+    shadowAnchor: [12, 6], // anchor point of the shadow. should be offset
+    popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
+}
+let earthquakeImage = {
+    iconUrl: 'assets/icon/earthy.png',
+    iconSize: [20, 20], // width and height of the image in pixels
     shadowSize: [35, 20], // width, height of optional shadow image
     iconAnchor: [15, 15], // point of the icon which will correspond to marker's location
     shadowAnchor: [12, 6], // anchor point of the shadow. should be offset
@@ -349,14 +378,11 @@ $("round").click(function () {
 
 
 
-// L.easyButton('fa-home', function (btn, mymap) {
-//     mymap.setView([54, -2], 4);
-// }).addTo(mymap);
 
-
-
-
-
+function earthquakeFeature(feature, layer) {
+    console.log(feature)
+    layer.bindPopup(`<h3> ${feature.properties.place} </h3><hr><p> ${new Date(feature.properties.time)} </p>`);
+  }
 
 
 
@@ -377,36 +403,6 @@ function winOlympicFeature(feature, layer) {
 
 
 }
-/*
-
-        function onEachFeature(feature, layer) {
-          
-           
-                layer.bindPopup(`Country: ${feature.properties.name}`);
-                layer.on({
-                    click : onCountrySelection
-                    
-                });
-                
-                            
-        }
-      
-        
-        function onCountrySelection(e){
-            //let layer = e.target
-            //console.log("Not suururue", layer.feature.properties.iso_a2)
-            //displayCountryInfo(layer.feature.properties.iso_a2)
-           let layer = e
-           console.log(e)
-            layer.setStyle(polyStyle);
-       
-        } 
-        
-        /*
-         * Callback for when a country is highlighted. Will take care of the ui aspects, and it will call
-         * other callbacks after done.
-         * @param e
-         */
 
 
 
@@ -484,6 +480,8 @@ const disease = (selectedCountryIso) => {
 
 // Get the geometries data
 let group1 = L.featureGroup()
+let group3 = L.featureGroup()
+let group5 = L.featureGroup()
 
 var circleLayer = {
     "type":"FeatureCollection",
@@ -689,7 +687,26 @@ let markersCapital = L.markerClusterGroup({
         });
     },
 });
+let markersEarthquake = L.markerClusterGroup({
+    spiderfyOnMaxZoom: true,
+    removeOutsideVisibleBounds: false,
+    disableClusteringAtZoom: 8,
+    showCoverageOnHover: false,
+    maxClusterRadius: 70,
+    animateAddingMarkers: true,
+    iconCreateFunction: cluster => {
+        let markers = cluster.getAllChildMarkers();
+        let first = earthquakeImage.iconUrl
 
+        let html =
+            `<img class="first-icon-cluster" src="${first}"></img><div class="circleEarthquake">${markers.length}</div>`;
+        return L.divIcon({
+            html: html,
+            className: 'mycluster',
+            iconSize: L.point(15, 15)
+        });
+    },
+});
 
 let countryGeo = $.ajax({
     url: './data/countryBorders.geo.json',
@@ -699,8 +716,7 @@ let countryGeo = $.ajax({
         alert(xhr.statusText)
     }
 })
-console.log(countryGeo)
-console.log(countryGeo.responseJson)
+
 
 
 let pointGeo = $.ajax({
@@ -728,11 +744,50 @@ let capital = $.ajax({
         alert(xhr.statusText)
     }
 })
+var queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_month.geojson"
 
+let earthquake = $.ajax({
+    url: queryUrl,
+    dataType: "json",
+    success: function(result){
+        console.log('earthquake', result)
+       
+        
+       
+        
+    },
+    error: function (xhr) {
+        alert(xhr.statusText)
+    }
+})
+var airportUrl = 'https://gist.githubusercontent.com/tdreyno/4278655/raw/7b0762c09b519f40397e4c3e100b097d861f5588/airports.json'
+
+let airports = (airportCountry) => {
+ $.ajax({
+    url: airportUrl,
+    dataType: "json",
+    success: function(result){
+        console.log('earthairportsquake', result)
+      var array = result
+      
+      for (var i=0; i <array.length; i++){
+        if (array[i].country === airportCountry){
+         L.marker([array[i].lat, array[i].lon]).bindPopup(`<h3> ${array[i].name} </h3><hr><p> ${array[i].city} </p>`).addTo(group5)
+       }
+    }
+       
+        
+    },
+    error: function (xhr) {
+        alert(xhr.statusText)
+    }
+})
+}
+console.log('this is', group5)
 /* -------------------------------------------------------------------------- */
 /*                                Main function                               */
 /* -------------------------------------------------------------------------- */
-$.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
+$.when(countryGeo, pointGeo, pointGeoSnow, capital, earthquake, airports).done(function () {
 
     function onEachFeature(feature, layer) {
         // does this feature have a property named popupContent?
@@ -746,6 +801,7 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
 
     let countrylayer = countryGeo.responseJSON
     let newLayer = null
+    console.log(countrylayer)
 
     let listCount = countrylayer.features.map(a => {
         let prop = a.properties
@@ -771,7 +827,14 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
     let pointlayerSnow = pointGeoSnow.responseJSON
 
     let capitallayer = capital.responseJSON
+
+    let earthquakelayer = earthquake.responseJSON
+
+    let airportlayer = airports.responseJSON
+
     
+//    console.log(earthquake.responseJSON)
+  //  console.log(airports.responseJSON)
     let SplitPoints = (cCode) => {
         let selected = cCode
         
@@ -784,8 +847,9 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
         
         if (lastClickedLayer !== null) {
             lastClickedLayer.setStyle(polyStyle)
+            
         }
-
+     
         let IconImage = (feature, latlng) => {
             let myIcon = L.icon(iconImage)
 
@@ -810,12 +874,35 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
 
             })
         }
+        let EarthquakeImage = (feature, latlng) => {
+            let myIcon = L.icon(earthquakeImage)
+
+            return L.marker(latlng, {
+                icon: myIcon
+
+            })
+        }
+        
+        let AirportImage = (feature, latlng) => {
+            let myIcon = L.icon(earthquakeImage)
+
+            return L.marker(latlng, {
+                icon: myIcon
+
+            })
+        }
+ 
+ 
+ 
 
         let pol = L.geoJSON(null, {
             style: polystyle
         })
+        console.log('bounds', selected)
+        
 
         pol.addData(selected)
+        
 
         pol.eachLayer(function (layer) {
 
@@ -836,7 +923,11 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
         
             let pointWithin3 = turf.within(capitallayer, polygon2.toGeoJSON());
             let pointWithin4 = turf.within(covCase, polygon2.toGeoJSON());
-
+            let pointWithin5 = turf.within(earthquakelayer, polygon2.toGeoJSON());
+            let pointWithin6 = turf.within(group5, polygon2.toGeoJSON());
+            console.log('point5', pointWithin5)
+            console.log('point6', pointWithin6)
+            
         
             // alert("results "+JSON.stringify(ptsWithin4));
             let geojsonPoint = L.geoJson(pointWithin1, {
@@ -853,6 +944,33 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
                 pointToLayer: CapitalImage,
                 onEachFeature: capitalFeature
             })
+            let geojsonPointEarthquake = L.geoJson(pointWithin5, {
+                pointToLayer: EarthquakeImage,
+                onEachFeature: earthquakeFeature
+                
+               
+            })
+            console.log(geojsonPointEarthquake)
+            let geojsonPointAirport = L.geoJson(pointWithin6, {
+                pointToLayer: AirportImage,
+                onEachFeature: earthquakeFeature
+                
+                
+               
+            })
+            console.log('geo', geojsonPointAirport)
+            let earthCircle =  L.geoJSON(pointWithin6, {
+                pointToLayer: function (feature, latlng) {
+                    
+                    return L.circle(latlng, {
+                        color: 'blue',
+                        fillColor: 'blue',
+                        radius: 2000,
+                        fillOpacity: 0.5,
+                    }).addTo(group5)
+                    
+                }
+            })
 
             // var geojsonMarkerOptions = 
             // `${Math.sqrt(pointWithin4.features[0].properties.cases * 1500)}`
@@ -865,31 +983,41 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
                         fillColor: '#f03',
                         radius: `${Math.sqrt(feature.properties.cases * 1500)}`,
                         fillOpacity: 0.5,
-                    }).addTo(group1).bindPopup(`Cases: ${feature.properties.cases.toLocaleString("en-US")}`)
+                    }).addTo(group1)
                     
                 }
             })
-            
-            L.geoJSON(selected, {
-                style: polystyle
-            }).addTo(group2)
-            
-            mymap.addLayer(group2)
+            newCircle.on('click', function(e){
+                $('#covidModal').modal('show')})
+
+              let styleBorder =  L.geoJSON(selected, {
+                    style: polystyle
+                }).addTo(group2)
+                mymap.fitBounds(styleBorder.getBounds())
+                
+                mymap.addLayer(group2)
 
             if(markers.getLayers().length > 0 ||
             markersSnow.getLayers().length > 0 ||
             markersCapital.getLayers().length > 0 ||
+            markersEarthquake.getLayers().length ||
             group1.getLayers().length > 0 ) {
                 markers.clearLayers()
                 markersSnow.clearLayers()
                 markersCapital.clearLayers()
                 group1.clearLayers()
+                markersEarthquake.clearLayers()
+                group5.clearLayers()
+                
             }
 
             markers.addLayer(geojsonPoint)
             markersSnow.addLayer(geojsonPointSnow)
             markersCapital.addLayer(geojsonPointCapital)
             group1.addLayer(newCircle)
+            markersEarthquake.addLayer(geojsonPointEarthquake)
+            group5.addLayer(geojsonPointAirport)
+            //group3.addLayer(geojsonPointEarthquake)
             
         })
     }
@@ -899,14 +1027,16 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
             color: '#fee440',
             dashArray: '',
             fillColor: '#001d3d',
-            fillOpacity: 0.9,
+            fillOpacity: 0.4,
             opacity: 1,
 
         }
+
     }
 
     let lastClickedLayer = null
     let group2 = L.featureGroup()
+  
     
     let c = []
     function getLocation() {
@@ -943,6 +1073,7 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
                 displayCountryInfo(data.results[0].components.country_code.toUpperCase())
                 disease(data.results[0].components.country_code.toUpperCase())
                 SplitPoints(first)
+                airports(data.results[0].components.country)
 
             })
     }
@@ -955,198 +1086,6 @@ $.when(countryGeo, pointGeo, pointGeoSnow, capital).done(function () {
        SplitPoints(selected)
     })
 
-    // , {
-    //     color: 'red',
-    //     fillColor: '#f03',
-    //     radius: `${Math.sqrt(pointWithin4.features[0].properties.cases * 1500)}`,
-    //     fillOpacity: 0.5,
-    // }
-
-    //let lastClickedLayer = null
-    // Null layer for selected dropdown
-    //let newLayer = null
-    // Onclick function
-    /*   let OnClickFeature = e => {
-           displayCountryInfo(e.target.feature.properties.iso_a2)
-           
-           group2.clearLayers()
-           // Default style
-           if (lastClickedLayer !== null) {
-   
-               lastClickedLayer.setStyle(polyStyle);
-           }
-           // Remove added layer from dropdown function
-           if (newLayer !== null) {
-               mymap.removeLayer(newLayer)
-   
-           }
-   
-           mymap.fitBounds(e.target.getBounds());
-   
-           // Set layer target
-           let countrylayer = e.target;
-          
-           // Replace null layer
-           lastClickedLayer = countrylayer;
-           // Set new style when the geojson clicked
-           countrylayer.setStyle(polyStyleOnclick);
-   
-           let cNcC = {}
-   
-           for (let i in countriesList.options) {
-               let list = countriesList.options[i].innerText
-               let val = countriesList.options[i].value
-               cNcC[list] = val
-           }
-   
-           let cFil = cNcC[countrylayer.feature.properties.name]
-          
-           displayCountryInfo(cFil);
-   
-           $("select option").filter(function () {
-               //may want to use $.trim in here
-               return $(this).text() == countrylayer.feature.properties.name;
-           }).prop('selected', true);
-   
-       }
-   */
-
-
-    // let IconImage = (feature, latlng) => {
-    //     let myIcon = L.icon(iconImage)
-
-    //     return L.marker(latlng, {
-    //         icon: myIcon
-
-    //     })
-
-    // }
-
-    // let IconImageSnow = (feature, latlng) => {
-    //     let myIcon = L.icon(iconImageSnow)
-    //     return L.marker(latlng, {
-    //         icon: myIcon
-    //     })
-    // }
-
-    // let CapitalImage = (feature, latlng) => {
-    //     let myIcon = L.icon(capitalImage)
-
-    //     return L.marker(latlng, {
-    //         icon: myIcon
-
-    //     })
-    // }
-
-    /*
-        let geojson = L.geoJson(countrylayer, {
-            onEachFeature: onEachFeature,
-            style: polyStyle
-        })
-    
-        mymap.addLayer(geojson)
-        
-    */
-    // let geojsonPoint = L.geoJson(pointlayer, {
-    //     pointToLayer: IconImage,
-    //     onEachFeature: olympicFeature,
-
-
-
-    // })
-
-    // let geojsonPointCapital = L.geoJson(capitallayer, {
-    //     pointToLayer: CapitalImage,
-    //     onEachFeature: capitalFeature
-
-    // })
-
-
-    // let geojsonPointSnow = L.geoJson(pointlayerSnow, {
-    //     pointToLayer: IconImageSnow,
-    //     onEachFeature: winOlympicFeature
-    // })
-
-
-
-
-    //  markers.addLayer(geojsonPoint)
-    //  markersSnow.addLayer(geojsonPointSnow)
-    //  markersCapital.addLayer(geojsonPointCapital)
-    //   mymap.addLayer(markers)
-    //   mymap.addLayer(markersSnow)
-
-    // mymap.addLayer(markers)
-    //mymap.addLayer(markersSnow)
-    // mymap.addLayer(markersCapital)
-    /*  document.getElementById('removelayer').onclick = function () {
-          if (!this.checked) {
-              if (mymap.hasLayer(geojsonPoint)) {
-                  mymap.removeLayer(geojsonPoint)
-              } else {
-                  mymap.removeLayer(markers)
-              }
-          } else {
-              if (mymap.hasLayer(geojsonPoint)) {
-                  mymap.addLayer(geojsonPoint)
-              } else {
-                  mymap.addLayer(markers)
-              }
-  
-  
-          }
-      } */
-    /*
-        document.getElementById('removeCapital').onclick = function () {
-            if (!this.checked) {
-                if (mymap.hasLayer(geojsonPointCapital)) {
-                    mymap.removeLayer(geojsonPointCapital)
-                }else {
-                    mymap.removeLayer(markersCapital)
-                }
-            } else {
-                if (mymap.hasLayer(geojsonPointCapital)) {
-                    mymap.addLayer(geojsonPointCapital)
-                } else {
-                    mymap.addLayer(markersCapital)
-                }
-            }
-        }
-    
-        document.getElementById('removelayerSnow').onclick = function () {
-            if (!this.checked) {
-                if (mymap.hasLayer(geojsonPointSnow)) {
-                    mymap.removeLayer(geojsonPointSnow)
-                }else {
-                    mymap.removeLayer(markersSnow)
-                }
-            } else {
-                if (mymap.hasLayer(geojsonPointSnow)) {
-                    mymap.addLayer(geojsonPointSnow)
-                } else {
-                    mymap.addLayer(markersSnow)
-                }
-            }
-        }
-    
-    })
-    
-           
-        document.getElementById('removelayerSnow').onclick = function () {
-            if (!this.checked) {
-                if (mymap.hasLayer(geojsonPointSnow)) {
-                    mymap.removeLayer(geojsonPointSnow)
-                } else {
-                    mymap.removeLayer(markersSnow)
-                }
-            } else {
-                if (mymap.hasLayer(geojsonPointSnow)) {
-                    mymap.addLayer(geojsonPointSnow)
-                } else {
-                    mymap.addLayer(markersSnow)
-                }
-            }
-        } */
 })
 
 $(window).load(function () {
@@ -1212,6 +1151,7 @@ const statistics = (countryStats) => {
     });
 }
 
+
 let baseMaps = {
     'Original': basemapone,
     'Water Colour': watercolor 
@@ -1220,7 +1160,10 @@ let overlayMaps = {
     'Summer Olympics': markers,
     'Winter Olympics': markersSnow,
     'Capital Cities': markersCapital,
-    'Covid Case': group1
+    'Covid Cases': group1,
+    'Earthquakes': markersEarthquake,
+    'Airports': group5
+    
 }
 
 L.control.layers(baseMaps, overlayMaps).addTo(mymap)

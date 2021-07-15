@@ -378,6 +378,20 @@ li {
   box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
   margin: 5px;
 }
+.circleEarthquake {
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  text-align: center;
+  background-color: yellow;
+  color: black;
+  font-family: "Roboto";
+  font-weight: bold;
+  font-size: 10px;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  margin: 5px;
+}
 /*
 #map-properties {
   color: white;
