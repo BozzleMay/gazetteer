@@ -4,31 +4,32 @@
 
     $countryData = json_decode(file_get_contents("../data/countryBorders.geo.json"), true);
 
-    $borders = [];
+    $border = null;
+  //  $country = [];
 
-    foreach ($countryData['features'] as $feature) {
+     foreach ($countryData['features'] as $feature) {
 
-        $temp = null;
-        $temp['code'] = $feature["properties"]['iso_a2'];
-        $temp['geometry'] = $feature["geometry"]['coordinates'];
-
-        if ($temp['code'] ===  $_REQUEST['country']){
-        array_push($borders, $temp);
+            $temp = null;
+            $temp['code'] = $feature["properties"]['iso_a2'];
+            
+        
+  
+                
+                if ($temp['code'] === $_REQUEST['country']){
+                //    array_push($country, $temp);
+                    // array_push($country, $feature);
+                   $border = $feature;
+                 //   break;
         }
         
     }
-
-    usort($borders, function ($item1, $item2) {
-
-        return $item1['geometry'] <=> $item2['geometry'];
-
-    });
 
     $output['status']['code'] = "200";
     $output['status']['geometry'] = "ok";
     $output['status']['description'] = "success";
     $output['status']['executedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
-    $output['data'] = $borders;
+    $output['data'] = $border;
+    
     
     header('Content-Type: application/json; charset=UTF-8');
 
