@@ -120,41 +120,7 @@ $('#countries').change(function () {
 
 //`https://api.windy.com/api/webcams/v2/list/category=beach?key=${API_KEY}`,
 
-$('#countries').change(function () {
-    let ccode =  $('#countries').val()
-$.ajax({
-   //url: `https://api.windy.com/api/webcams/v2/list/country=IT?key=${API_KEY}`,
-   //url: `https://api.windy.com/api/webcams/v2/list/country=${ccode}/limit=10?show=webcams:location,image,player,url&key=${API_KEY}`,
-    url: 'php/webcam.php',
-    type: 'GET',
-    dataType: 'json',
-    data: {
-        country: $('#countries').val(),
-    },
 
-
-    success: function (result) {
-
-        //  if (result.status.name == "ok") {
-
-console.log(result)
-
-for (let i = 0; i < result.data.webcams.length; i++){
-console.log(result.data.webcams[i].player.day.embed)
-L.marker([result.data.webcams[i].location.latitude, result.data.webcams[i].location.longitude], { icon: airportExtra }).bindPopup(`<video width="210px" height:"140px"> <source src=${result.data.webcams[i].player.day.embed} type="video/webM"> <video>`).addTo(mymap) 
-    } 
-
-        
-        // } 
-
-
-    },
-    error: function (jqXHR, textStatus, errorThrown) {
-        console.log('didnt')
-    }
-})
-
-})
 // countriesList.innerHTML = '<option value="Select a country">Select A Country</option>'
 
 let displayCountryInfo = (iso2Code) => {
@@ -257,7 +223,7 @@ var earthQuakeExtra = L.ExtraMarkers.icon({
     prefix: 'fa'
 });
 var airportExtra = L.ExtraMarkers.icon({
-    icon: 'fa-plane',
+    icon: 'fa-camera',
     markerColor: 'black',
     shape: 'penta',
     prefix: 'fa'
@@ -392,12 +358,12 @@ const forecast = (place) => {
         .then((response) => response.json())
         .then((data) => {
 
-            document.getElementById('max').innerText = data.forecast.forecastday[0].day.maxtemp_c
-            document.getElementById('maxtomorrow').innerText = data.forecast.forecastday[1].day.maxtemp_c
-            document.getElementById('max2').innerText = data.forecast.forecastday[2].day.maxtemp_c
-            document.getElementById('min').innerText = data.forecast.forecastday[0].day.mintemp_c
-            document.getElementById('mintomorrow').innerText = data.forecast.forecastday[1].day.mintemp_c
-            document.getElementById('min2').innerText = data.forecast.forecastday[2].day.mintemp_c
+            document.getElementById('max').innerText = Math.round(data.forecast.forecastday[0].day.maxtemp_c)
+            document.getElementById('maxtomorrow').innerText = Math.round(data.forecast.forecastday[1].day.maxtemp_c)
+            document.getElementById('max2').innerText = Math.round(data.forecast.forecastday[2].day.maxtemp_c)
+            document.getElementById('min').innerText = Math.round(data.forecast.forecastday[0].day.mintemp_c)
+            document.getElementById('mintomorrow').innerText = Math.round(data.forecast.forecastday[1].day.mintemp_c)
+            document.getElementById('min2').innerText = Math.round(data.forecast.forecastday[2].day.mintemp_c)
             document.getElementById('weather').innerText = data.forecast.forecastday[0].day.condition.text
             document.querySelector('#icon').src = data.forecast.forecastday[0].day.condition.icon
             document.getElementById('weathertomo').innerText = data.forecast.forecastday[1].day.condition.text
@@ -464,6 +430,7 @@ const disease = (selectedCountryIso) => {
 let group1 = L.featureGroup()
 let group3 = L.featureGroup()
 let group5 = L.featureGroup()
+let group10 = L.featureGroup()
 
 var circleLayer = {
     "type": "FeatureCollection",
@@ -782,11 +749,11 @@ let airports = (airportCountry) => {
 
                 if (array[i].country === airportCountry) {
 
-                    airportCluster.addLayer(L.marker([array[i].lat, array[i].lon], { icon: airportExtra }).bindPopup(`<h3> ${array[i].name} </h3><hr><p> ${array[i].city} </p>`))
+                 //   airportCluster.addLayer(L.marker([array[i].lat, array[i].lon], { icon: airportExtra }).bindPopup(`<h3> ${array[i].name} </h3><hr><p> ${array[i].city} </p>`))
 
 
 
-                    group5.addLayer(airportCluster)
+                  //  group5.addLayer(airportCluster)
                 }
 
 
@@ -799,6 +766,43 @@ let airports = (airportCountry) => {
         }
     })
 }
+
+$('#countries').change(function () {
+//    let ccode =  $('#countries').val()
+$.ajax({
+   //url: `https://api.windy.com/api/webcams/v2/list/country=IT?key=${API_KEY}`,
+   //url: `https://api.windy.com/api/webcams/v2/list/country=${ccode}/limit=10?show=webcams:location,image,player,url&key=${API_KEY}`,
+    url: 'php/webcam.php',
+    type: 'GET',
+    dataType: 'json',
+    data: {
+        country: $('#countries').val(),
+    },
+
+
+    success: function (result) {
+
+        //  if (result.status.name == "ok") {
+
+console.log(result)
+
+for (let i = 0; i < result.data.webcams.length; i++){
+console.log(result.data.webcams[i].player.day.embed)
+airportCluster.addLayer(L.marker([result.data.webcams[i].location.latitude, result.data.webcams[i].location.longitude], { icon: airportExtra }).bindPopup(`<div class='se-pre-con' style="height:200px; width:300px"><iframe src="${result.data.webcams[i].player.day.embed}?autoplay=1" width="300px" height="200px" seamless> </iframe></div>`))
+group5.addLayer(airportCluster)   
+} 
+
+        
+        // } 
+
+
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+        console.log('didnt')
+    }
+})
+
+})
 /* -------------------------------------------------------------------------- */
 /*                                Main function                               */
 /* -------------------------------------------------------------------------- */
@@ -1109,6 +1113,10 @@ $(window).load(function () {
     // Animate loader off screen
     $(".se-pre-con").fadeOut("slow");;
 });
+$(document).load(function () {
+    // Animate loader off screen
+    $(".loading").fadeOut("slow");;
+});
 
 
 
@@ -1172,7 +1180,7 @@ mymap.addLayer(markers)
 mymap.addLayer(markersSnow)
 mymap.addLayer(markersCapital)
 mymap.addLayer(markersEarthquake)
-//mymap.addLayer(group5)
+mymap.addLayer(group5)
 
 
 let baseMaps = {
@@ -1185,7 +1193,7 @@ let overlayMaps = {
     'Capital Cities': markersCapital,
     'Covid Cases': group1,
     'Earthquakes': markersEarthquake,
-    'Airports': group5
+    'Webcams': group5
 
 }
 
