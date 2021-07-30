@@ -118,7 +118,43 @@ $('#countries').change(function () {
 
 
 
+//`https://api.windy.com/api/webcams/v2/list/category=beach?key=${API_KEY}`,
 
+$('#countries').change(function () {
+    let ccode =  $('#countries').val()
+$.ajax({
+   //url: `https://api.windy.com/api/webcams/v2/list/country=IT?key=${API_KEY}`,
+   //url: `https://api.windy.com/api/webcams/v2/list/country=${ccode}/limit=10?show=webcams:location,image,player,url&key=${API_KEY}`,
+    url: 'php/webcam.php',
+    type: 'GET',
+    dataType: 'json',
+    data: {
+        country: $('#countries').val(),
+    },
+
+
+    success: function (result) {
+
+        //  if (result.status.name == "ok") {
+
+console.log(result)
+
+for (let i = 0; i < result.data.webcams.length; i++){
+console.log(result.data.webcams[i].player.day.embed)
+L.marker([result.data.webcams[i].location.latitude, result.data.webcams[i].location.longitude], { icon: airportExtra }).bindPopup(`<video width="210px" height:"140px"> <source src=${result.data.webcams[i].player.day.embed} type="video/webM"> <video>`).addTo(mymap) 
+    } 
+
+        
+        // } 
+
+
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+        console.log('didnt')
+    }
+})
+
+})
 // countriesList.innerHTML = '<option value="Select a country">Select A Country</option>'
 
 let displayCountryInfo = (iso2Code) => {
@@ -709,6 +745,7 @@ let capital = $.ajax({
         alert(xhr.statusText)
     }
 })
+
 var queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_month.geojson"
 
 let earthquake = $.ajax({
@@ -1135,7 +1172,7 @@ mymap.addLayer(markers)
 mymap.addLayer(markersSnow)
 mymap.addLayer(markersCapital)
 mymap.addLayer(markersEarthquake)
-mymap.addLayer(group5)
+//mymap.addLayer(group5)
 
 
 let baseMaps = {

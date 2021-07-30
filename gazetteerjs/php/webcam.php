@@ -2,13 +2,14 @@
 
 	// remove for production
 
-	ini_set('display_errors', 'On');
-	error_reporting(E_ALL);
+	//ini_set('display_errors', 'On'
+	//error_reporting(E_ALL);
 
 	$executionStartTime = microtime(true);
 
-    $url='http://api.geonames.org/countryInfoJSON?country=' . $_REQUEST['country'] . '&username=Bozzle26&style=full';
-    
+    $key = 'iAfKIlL2ZsD4eSXZFbbF9VJUrl5Ur65J';
+
+	$url='https://api.windy.com/api/webcams/v2/list/country=' . $_REQUEST['country'] . '/limit=10?show=webcams:location,image,player,url&key=' . $key;
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -25,10 +26,13 @@
 	$output['status']['name'] = "ok";
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
-	$output['data'] = $result
+	$output['data'] = $decode['result'];
 	
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: PUT, GET POST');
+    header('Access-Control-Allow-Headers: Origin, X-Requested-with, Content-Type, Accept');
 	header('Content-Type: application/json; charset=UTF-8');
 
 	echo json_encode($output); 
-
+   
 ?>
