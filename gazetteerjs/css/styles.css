@@ -558,3 +558,6 @@ iframe[seamless] {
   height: 100%;
   z-index: 9999;
 }
+.modal-backdrop {
+  background-color: transparent;
+}
